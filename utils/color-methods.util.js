@@ -129,15 +129,58 @@ function rgbLightness(r, g, b) {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-// Generates a softer contrasting text color
+// Calculates relative luminance (per WCAG)
+function luminance(r, g, b) {
+    const toLinear = (c) => {
+        const v = c / 255;
+        return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    };
+    const R = toLinear(r);
+    const G = toLinear(g);
+    const B = toLinear(b);
+    return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+}
+
+// Calculates the contrast ratio
+function contrastRatio(rgb1, rgb2) {
+    const lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+    const lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+    const brightest = Math.max(lum1, lum2);
+    const darkest = Math.min(lum1, lum2);
+    return (brightest + 0.05) / (darkest + 0.05);
+}
+
+// Lightens or darkens a color by a percentage
+function adjustColor(rgb, percent) {
+    return rgb.map(val => Math.min(255, Math.max(0, Math.round(val + (val * percent)))));
+}
+
 function getTextColor(hex) {
-    const rgb = hexToRgb(hex);
-    const lightness = rgbLightness(rgb[0], rgb[1], rgb[2]);
-    if (lightness < 180) {
-        return blendColors(hex, '#FFFFFF', 0.9);
-    } else {
-        return blendColors(hex, '#000000', 0.9);
+    const background = hexToRgb(hex);
+    const ratios = [];
+
+    function testColor(baseColor, direction, steps) {
+        for (let i = 0; i <= steps; i++) {
+            const adjusted = adjustColor(baseColor, i * direction * 0.1); // Lighten or darken
+            const ratio = contrastRatio(background, adjusted);
+            ratios.push({ color: rgbToHex(adjusted[0], adjusted[1], adjusted[2]), ratio });
+        }
     }
+
+    // Test black (lighten)
+    testColor([0, 0, 0], 1, 10);
+
+    // Test white (darken)
+    testColor([255, 255, 255], -1, 10);
+
+    // Sort colors by highest contrast ratio
+    ratios.sort((a, b) => b.ratio - a.ratio);
+
+    // Select the first one that meets the AAA ratio (>= 7)
+    const bestColor = ratios.find(r => r.ratio >= 7);
+
+    // Return the best color, or fallback to the highest ratio found
+    return bestColor ? bestColor.color : ratios[0].color;
 }
 
 // Generates a random RGB color
