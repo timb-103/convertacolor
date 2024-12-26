@@ -27,6 +27,13 @@
     <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
     <script defer data-domain="convertacolor.com" src="https://plausible.io/js/script.js"></script>
+    <script>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"></script>
     <script type="text/javascript" src="utils/color-methods.util.js"></script>
     <style>
@@ -426,6 +433,7 @@
       }
 
       function copy(text) {
+        window.plausible("color:copied");
         navigator.clipboard.writeText(text);
       }
 
@@ -460,6 +468,8 @@
               this.generateColor();
 
               history.pushState(null, "", `?hex=${this.hex.replace("#", "")}`);
+
+              window.plausible("random-color:generated");
             }
           });
 
