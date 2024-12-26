@@ -156,13 +156,12 @@
       }
 
       .copied-drawer {
+        font-family: "Fredoka", Arial, Verdana, sans-serif;
         position: fixed;
         bottom: 0;
         width: 100%;
         text-align: center;
-        background: #fff;
         left: 0;
-        border-top: 1px solid #000;
         transition: all 0.2s;
       }
     </style>
@@ -327,7 +326,11 @@
         </p>
       </div>
 
-      <div class="copied-drawer" :style="{transform: `translateY(${copied ? '0%' : '100%'})` }">
+      <div
+        class="copied-drawer"
+        :style="{transform: `translateY(${copied ? '0%' : '100%'})`, 
+        background: textColor, color: hex, 'box-shadow': copied ? '0 -10px 20px rgba(0, 0, 0, 0.2)' : '' }"
+      >
         <p>Copied!</p>
       </div>
     </div>
