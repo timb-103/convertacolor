@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast." />
+    <title>Convert a Color – HEX, RGB, HSL, CMYK</title>
+    <link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet" />
+    <script defer data-domain="convertacolor.com" src="https://plausible.io/js/script.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"></script>
+    <script type="text/javascript" src="utils/color-methods.util.js"></script>
+    <style>
+      body {
+        font-family: Arial, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 100vh;
+        transition: background-color 0.2s ease;
+      }
+
+      [v-cloak] {
+        display: none;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 1rem auto;
+        text-align: center;
+      }
+
+      .logo {
+        font-family: "Fredoka", Arial, Verdana, sans-serif;
+        text-decoration: none;
+        font-size: 18px;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+      .logo > span {
+        font-size: 22px;
+        transform: translateY(2px);
+        display: inline-block;
+      }
+
+      h1 {
+        font-family: "Fredoka", Arial, Verdana, sans-serif;
+        font-size: 24px;
+      }
+
+      .description {
+        max-width: 350px;
+        margin: 1rem auto;
+      }
+
+      form {
+        max-width: 400px;
+        margin: 2rem auto;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        font-size: 12px;
+      }
+
+      input {
+        background: transparent;
+        border: none;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        padding: 10px 0px;
+        font-size: 18px;
+      }
+
+      .spacebar {
+        font-family: "Fredoka", Arial, Verdana, sans-serif;
+        text-align: center;
+        font-size: 17px;
+      }
+    </style>
+    <script type="text/javascript">
+      /** @description redirect for old URL's */
+      if (window.location.hash.startsWith("#/hex/")) {
+        const hex = window.location.hash.split("/hex/")[1];
+        const pathname =
+          window.location.pathname[window.location.pathname.length - 1] === "/"
+            ? window.location.pathname.slice(0, window.location.pathname.length - 1)
+            : window.location.pathname;
+        const newUrl = `${pathname}?hex=${hex}`;
+
+        window.history.replaceState({}, "", newUrl);
+        window.location.reload();
+      }
+    </script>
+  </head>
+
+  <body :style="{ 'background-color': hex, color: textColor }" @vue:mounted="mounted" v-cloak>
+    <div id="app">
+      <div class="container">
+        <a class="logo" href="/" @click.prevent="resetPage()" :style="{ color: textColor }"> Convert<span>A</span>Color </a>
+        <h1>Color Converter</h1>
+        <p class="description">Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.</p>
+
+        <form>
+          <!-- hex -->
+          <div class="form-group">
+            <label for="">HEX</label>
+            <input
+              type="text"
+              placeholder="#FF9200"
+              v-model="hex"
+              @input="onHexChange"
+              :style="{ 'border-color': textColor, color: textColor }"
+              style="text-transform: uppercase"
+            />
+          </div>
+
+          <!-- rgb -->
+          <div class="form-group">
+            <label for="">RGB</label>
+            <input
+              type="text"
+              placeholder="rgb(255,255,255)"
+              v-model="rgb"
+              @input="onRgbChange"
+              :style="{ 'border-color': textColor, color: textColor }"
+            />
+          </div>
+
+          <!-- hsl -->
+          <div class="form-group">
+            <label for="">HSL</label>
+            <input
+              type="text"
+              placeholder="hsl(255, 100%, 50%)"
+              v-model="hsl"
+              @input="onHslChange"
+              :style="{ 'border-color': textColor, color: textColor }"
+            />
+          </div>
+
+          <!-- cmyk -->
+          <div class="form-group">
+            <label for="">CMYK</label>
+            <input
+              type="text"
+              placeholder="cmyk(100%, 0%, 0%, 0%)"
+              v-model="cmyk"
+              @input="onCmykChange"
+              :style="{ 'border-color': textColor, color: textColor }"
+            />
+          </div>
+
+          <p class="spacebar">Hit spacebar to convert a random color</p>
+        </form>
+
+        <p class="timb">Built by <a href="https://timb.com?ref=convertacolor" :style="{ color: textColor }">timb.com</a></p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { createApp } from "https://unpkg.com/petite-vue?module";
+
+      const textColor = "#000000";
+
+      const hex = "";
+      const rgb = "";
+      const hsl = "";
+      const cmyk = "";
+
+      function generateColor() {
+        const color = randomColor();
+        const hslArray = rgbToHsl(...hexToRgb(color));
+        const cmykArray = rgbToCmyk(...hexToRgb(color));
+
+        this.hex = color;
+        this.rgb = formatRgbString(...hexToRgb(color));
+        this.hsl = formatHslString(...hslArray);
+        this.cmyk = `cmyk(${cmykArray.join(",")})`;
+
+        this.updateTextColor(color);
+      }
+
+      function onHexChange() {
+        const color = this.hex;
+        const [r, g, b] = hexToRgb(color);
+        const [h, s, l] = rgbToHsl(r, g, b);
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
+
+        this.rgb = formatRgbString(r, g, b);
+        this.hsl = formatHslString(h, s, l);
+        this.cmyk = formatCmykString(c, m, y, k);
+
+        this.updateTextColor(color);
+      }
+
+      function onRgbChange() {
+        const colors = this.rgb.match(/\d+/g)?.map(Number);
+
+        const [r, g, b] = colors?.length === 3 ? colors : [0, 0, 0];
+        const [h, s, l] = rgbToHsl(r, g, b);
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
+
+        this.hex = rgbToHex(r, g, b);
+        this.hsl = formatHslString(h, s, l);
+        this.cmyk = formatCmykString(c, m, y, k);
+
+        this.updateTextColor(this.hex);
+      }
+
+      function onHslChange() {
+        const colors = this.hsl.match(/\d+/g)?.map(Number);
+
+        const [h, s, l] = colors?.length === 3 ? colors : [0, 0, 0];
+        const [r, g, b] = hslToRgb(h, s, l);
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
+
+        this.hex = rgbToHex(r, g, b);
+        this.rgb = formatRgbString(r, g, b);
+        this.cmyk = formatCmykString(c, m, y, k);
+
+        this.updateTextColor(this.hex);
+      }
+
+      function onCmykChange() {
+        const [c, m, y, k] = this.cmyk.match(/\d+/g)?.map(Number);
+        const [r, g, b] = cmykToRgb(c, m, y, k);
+        const [h, s, l] = rgbToHsl(r, g, b);
+
+        this.hex = rgbToHex(r, g, b);
+        this.rgb = formatRgbString(r, g, b);
+        this.hsl = formatHslString(h, s, l);
+
+        this.updateTextColor(this.hex);
+      }
+
+      function loadColorFromURL() {
+        const hexQuery = new URLSearchParams(window.location.search).get("hex");
+        if (/^[0-9A-F]{6}$/i.test(hexQuery)) {
+          this.hex = `#${hexQuery}`;
+          this.onHexChange();
+          console.log(hexQuery);
+        }
+      }
+
+      function resetPage() {
+        window.history.pushState({}, "", window.location.pathname);
+        window.location.reload();
+      }
+
+      function updateTextColor(hex) {
+        this.textColor = getTextColor(hex);
+      }
+
+      createApp({
+        hex,
+        rgb,
+        hsl,
+        cmyk,
+        textColor,
+        resetPage,
+        generateColor,
+        onHexChange,
+        onRgbChange,
+        onHslChange,
+        onCmykChange,
+        updateTextColor,
+        loadColorFromURL,
+        mounted() {
+          this.generateColor();
+
+          document.addEventListener("keydown", (event) => {
+            if (event.code === "Space") {
+              event.preventDefault();
+              this.generateColor();
+
+              history.pushState(null, "", `?hex=${this.hex.replace("#", "")}`);
+            }
+          });
+
+          window.addEventListener("load", this.loadColorFromURL.bind(this));
+          window.addEventListener("popstate", this.loadColorFromURL.bind(this));
+        },
+      }).mount();
+    </script>
+  </body>
+</html>
