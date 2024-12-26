@@ -129,9 +129,9 @@ function getTextColor(hex) {
     const rgb = hexToRgb(hex);
     const lightness = rgbLightness(rgb[0], rgb[1], rgb[2]);
     if (lightness < 180) {
-        return blendColors(hex, '#FFFFFF', 0.75);
+        return blendColors(hex, '#FFFFFF', 0.9);
     } else {
-        return blendColors(hex, '#000000', 0.5);
+        return blendColors(hex, '#000000', 0.9);
     }
 }
 
