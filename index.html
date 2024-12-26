@@ -97,6 +97,25 @@
         border-bottom-style: solid;
         padding: 10px 0px;
         font-size: 18px;
+        width: 100%;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .copy-button {
+        position: absolute;
+        right: 5px;
+        top: 8px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+      }
+
+      .copy-button > svg {
+        width: 20px;
+        height: 20px;
       }
 
       .spacebar {
@@ -132,50 +151,92 @@
           <!-- hex -->
           <div class="form-group">
             <label for="">HEX</label>
-            <input
-              type="text"
-              placeholder="#FF9200"
-              v-model="hex"
-              @input="onHexChange"
-              :style="{ 'border-color': textColor, color: textColor }"
-              style="text-transform: uppercase"
-            />
+            <div class="input-group">
+              <input
+                type="text"
+                placeholder="#FF9200"
+                v-model="hex"
+                @input="onHexChange"
+                :style="{ 'border-color': textColor, color: textColor }"
+                style="text-transform: uppercase"
+              />
+              <button class="copy-button" @click.prevent="copy(hex)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path
+                    :fill="textColor"
+                    d="M384 352l-160 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l108.1 0c4.2 0 8.3 1.7 11.3 4.7l67.9 67.9c3 3 4.7 7.1 4.7 11.3L416 320c0 17.7-14.3 32-32 32zM433.9 81.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L224 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-32-32 0 0 32c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0 0-32-64 0z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- rgb -->
           <div class="form-group">
             <label for="">RGB</label>
-            <input
-              type="text"
-              placeholder="rgb(255,255,255)"
-              v-model="rgb"
-              @input="onRgbChange"
-              :style="{ 'border-color': textColor, color: textColor }"
-            />
+            <div class="input-group">
+              <input
+                type="text"
+                placeholder="rgb(255,255,255)"
+                v-model="rgb"
+                @input="onRgbChange"
+                :style="{ 'border-color': textColor, color: textColor }"
+              />
+
+              <button class="copy-button" @click.prevent="copy(rgb)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path
+                    :fill="textColor"
+                    d="M384 352l-160 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l108.1 0c4.2 0 8.3 1.7 11.3 4.7l67.9 67.9c3 3 4.7 7.1 4.7 11.3L416 320c0 17.7-14.3 32-32 32zM433.9 81.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L224 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-32-32 0 0 32c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0 0-32-64 0z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- hsl -->
           <div class="form-group">
             <label for="">HSL</label>
-            <input
-              type="text"
-              placeholder="hsl(255, 100%, 50%)"
-              v-model="hsl"
-              @input="onHslChange"
-              :style="{ 'border-color': textColor, color: textColor }"
-            />
+            <div class="input-group">
+              <input
+                type="text"
+                placeholder="hsl(255, 100%, 50%)"
+                v-model="hsl"
+                @input="onHslChange"
+                :style="{ 'border-color': textColor, color: textColor }"
+              />
+              <button class="copy-button" @click.prevent="copy(hsl)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path
+                    :fill="textColor"
+                    d="M384 352l-160 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l108.1 0c4.2 0 8.3 1.7 11.3 4.7l67.9 67.9c3 3 4.7 7.1 4.7 11.3L416 320c0 17.7-14.3 32-32 32zM433.9 81.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L224 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-32-32 0 0 32c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0 0-32-64 0z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- cmyk -->
           <div class="form-group">
             <label for="">CMYK</label>
-            <input
-              type="text"
-              placeholder="cmyk(100%, 0%, 0%, 0%)"
-              v-model="cmyk"
-              @input="onCmykChange"
-              :style="{ 'border-color': textColor, color: textColor }"
-            />
+            <div class="input-group">
+              <input
+                type="text"
+                placeholder="cmyk(100%, 0%, 0%, 0%)"
+                v-model="cmyk"
+                @input="onCmykChange"
+                :style="{ 'border-color': textColor, color: textColor }"
+              />
+
+              <button class="copy-button" @click.prevent="copy(cmyk)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path
+                    :fill="textColor"
+                    d="M384 352l-160 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l108.1 0c4.2 0 8.3 1.7 11.3 4.7l67.9 67.9c3 3 4.7 7.1 4.7 11.3L416 320c0 17.7-14.3 32-32 32zM433.9 81.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L224 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-32-32 0 0 32c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0 0-32-64 0z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <p class="spacebar">Hit spacebar to convert a random color</p>
@@ -266,13 +327,16 @@
         if (/^[0-9A-F]{6}$/i.test(hexQuery)) {
           this.hex = `#${hexQuery}`;
           this.onHexChange();
-          console.log(hexQuery);
         }
       }
 
       function resetPage() {
         window.history.pushState({}, "", window.location.pathname);
         window.location.reload();
+      }
+
+      function copy(text) {
+        navigator.clipboard.writeText(text);
       }
 
       function updateTextColor(hex) {
@@ -285,6 +349,7 @@
         hsl,
         cmyk,
         textColor,
+        copy,
         resetPage,
         generateColor,
         onHexChange,
