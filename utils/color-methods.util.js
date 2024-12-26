@@ -93,7 +93,11 @@ function extractRGB(color) {
     return null; // Return null if the input is invalid
 }
 
-function formatRgbString(r, g, b) {
+function formatRgbString(r, g, b, isNormalized) {
+    if (isNormalized) {
+        const normalized = normalizeRgb([r,g,b])
+        return `rgb(${normalized.join(',')})`
+    }
     return `rgb(${r},${g},${b})`
 }
 
@@ -138,7 +142,7 @@ function randomColor() {
 
 // Normalizes RGB values (0-1 range)
 function normalizeRgb(rgb) {
-    return rgb.map(val => (val / 255).toFixed(2));
+    return rgb.map(val => parseFloat((val / 255).toFixed(2)));
 }
 
 // Un-normalizes RGB values (0-255 range)

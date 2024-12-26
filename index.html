@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast." />
+    <meta
+      name="description"
+      content="Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast."
+    />
     <title>Convert a Color – HEX, RGB, HSL, CMYK</title>
     <link id="favicon" rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png" />
@@ -90,6 +93,18 @@
         font-size: 12px;
       }
 
+      .rgb-label {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .rgb-label > button {
+        background: transparent;
+        border: none;
+        font-size: 10px;
+        cursor: pointer;
+      }
+
       input {
         background: transparent;
         border: none;
@@ -121,7 +136,7 @@
       .spacebar {
         font-family: "Fredoka", Arial, Verdana, sans-serif;
         text-align: center;
-        font-size: 17px;
+        font-size: 15px;
       }
     </style>
     <script type="text/javascript">
@@ -143,7 +158,9 @@
   <body :style="{ 'background-color': hex, color: textColor }" @vue:mounted="mounted" v-cloak>
     <div id="app">
       <div class="container">
-        <a class="logo" href="/" @click.prevent="resetPage()" :style="{ color: textColor }"> Convert<span>A</span>Color </a>
+        <a class="logo" href="/" @click.prevent="resetPage()" :style="{ color: textColor }">
+          Convert<span>A</span>Color
+        </a>
         <h1>Color Converter</h1>
         <p class="description">Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.</p>
 
@@ -173,17 +190,32 @@
 
           <!-- rgb -->
           <div class="form-group">
-            <label for="">RGB</label>
+            <label for="" class="rgb-label">
+              <span>RGB</span>
+              <button v-if="is8BitMode" @click.prevent="is8BitMode = false" :style="{ color: textColor }">
+                8-bit mode
+              </button>
+              <button v-else @click.prevent="is8BitMode = true" :style="{ color: textColor }">Normalized</button>
+            </label>
             <div class="input-group">
               <input
+                v-if="is8BitMode"
                 type="text"
                 placeholder="rgb(255,255,255)"
                 v-model="rgb"
                 @input="onRgbChange"
                 :style="{ 'border-color': textColor, color: textColor }"
               />
+              <input
+                v-else
+                type="text"
+                placeholder="rgb(1,1,1)"
+                v-model="rgbNormalized"
+                @input="onRgbNormalizedChange"
+                :style="{ 'border-color': textColor, color: textColor }"
+              />
 
-              <button class="copy-button" @click.prevent="copy(rgb)">
+              <button class="copy-button" @click.prevent="copy(is8BitMode ? rgb : rgbNormalized)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path
                     :fill="textColor"
@@ -242,7 +274,9 @@
           <p class="spacebar">Hit spacebar to convert a random color</p>
         </form>
 
-        <p class="timb">Built by <a href="https://timb.com?ref=convertacolor" :style="{ color: textColor }">timb.com</a></p>
+        <p class="timb">
+          Built by <a href="https://timb.com?ref=convertacolor" :style="{ color: textColor }">timb.com</a>
+        </p>
       </div>
     </div>
 
@@ -253,18 +287,23 @@
 
       const hex = "";
       const rgb = "";
+      const rgbNormalized = "";
       const hsl = "";
       const cmyk = "";
 
+      const is8BitMode = true;
+
       function generateColor() {
         const color = randomColor();
-        const hslArray = rgbToHsl(...hexToRgb(color));
-        const cmykArray = rgbToCmyk(...hexToRgb(color));
+        const [r, g, b] = hexToRgb(color);
+        const [h, s, l] = rgbToHsl(r, g, b);
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
 
         this.hex = color;
-        this.rgb = formatRgbString(...hexToRgb(color));
-        this.hsl = formatHslString(...hslArray);
-        this.cmyk = `cmyk(${cmykArray.join(",")})`;
+        this.rgb = formatRgbString(r, g, b);
+        this.rgbNormalized = formatRgbString(r, g, b, true);
+        this.hsl = formatHslString(h, s, l);
+        this.cmyk = formatCmykString(c, m, y, k);
 
         this.updateTextColor(color);
       }
@@ -276,6 +315,7 @@
         const [c, m, y, k] = rgbToCmyk(r, g, b);
 
         this.rgb = formatRgbString(r, g, b);
+        this.rgbNormalized = formatRgbString(r, g, b, true);
         this.hsl = formatHslString(h, s, l);
         this.cmyk = formatCmykString(c, m, y, k);
 
@@ -283,12 +323,34 @@
       }
 
       function onRgbChange() {
-        const colors = this.rgb.match(/\d+/g)?.map(Number);
+        let colors =
+          this.rgb.match(/-?\d+(\.\d+)?/g)?.map(Number)?.length === 3
+            ? this.rgb.match(/-?\d+(\.\d+)?/g)?.map(Number)
+            : [0, 0, 0];
 
-        const [r, g, b] = colors?.length === 3 ? colors : [0, 0, 0];
+        const [r, g, b] = colors;
         const [h, s, l] = rgbToHsl(r, g, b);
         const [c, m, y, k] = rgbToCmyk(r, g, b);
 
+        this.rgbNormalized = formatRgbString(r, g, b, true);
+        this.hex = rgbToHex(r, g, b);
+        this.hsl = formatHslString(h, s, l);
+        this.cmyk = formatCmykString(c, m, y, k);
+
+        this.updateTextColor(this.hex);
+      }
+
+      function onRgbNormalizedChange() {
+        let colors =
+          this.rgbNormalized.match(/-?\d+(\.\d+)?/g)?.map(Number)?.length === 3
+            ? unnormalizeRgb(this.rgbNormalized.match(/-?\d+(\.\d+)?/g)?.map(Number))
+            : [0, 0, 0];
+
+        const [r, g, b] = colors;
+        const [h, s, l] = rgbToHsl(r, g, b);
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
+
+        this.rgb = formatRgbString(r, g, b);
         this.hex = rgbToHex(r, g, b);
         this.hsl = formatHslString(h, s, l);
         this.cmyk = formatCmykString(c, m, y, k);
@@ -305,6 +367,7 @@
 
         this.hex = rgbToHex(r, g, b);
         this.rgb = formatRgbString(r, g, b);
+        this.rgbNormalized = formatRgbString(r, g, b, true);
         this.cmyk = formatCmykString(c, m, y, k);
 
         this.updateTextColor(this.hex);
@@ -317,6 +380,7 @@
 
         this.hex = rgbToHex(r, g, b);
         this.rgb = formatRgbString(r, g, b);
+        this.rgbNormalized = formatRgbString(r, g, b, true);
         this.hsl = formatHslString(h, s, l);
 
         this.updateTextColor(this.hex);
@@ -346,14 +410,17 @@
       createApp({
         hex,
         rgb,
+        rgbNormalized,
         hsl,
         cmyk,
         textColor,
+        is8BitMode,
         copy,
         resetPage,
         generateColor,
         onHexChange,
         onRgbChange,
+        onRgbNormalizedChange,
         onHslChange,
         onCmykChange,
         updateTextColor,
