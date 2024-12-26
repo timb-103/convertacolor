@@ -1,3 +1,8 @@
+function getRandomColor() {
+    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    return `#${randomColor.padStart(6, "0")}`; // Ensures 6 characters
+  }
+
 // Converts RGB values to a HEX color string
 function rgbToHex(r, g, b) {
     const bin = (r << 16) | (g << 8) | b;

@@ -34,7 +34,6 @@
           (window.plausible.q = window.plausible.q || []).push(arguments);
         };
     </script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"></script>
     <script type="text/javascript" src="utils/color-methods.util.js"></script>
     <style>
       @font-face {
@@ -348,7 +347,7 @@
       const copied = false;
 
       function generateColor() {
-        const color = randomColor();
+        const color = getRandomColor();
         const [r, g, b] = hexToRgb(color);
         const [h, s, l] = rgbToHsl(r, g, b);
         const [c, m, y, k] = rgbToCmyk(r, g, b);
