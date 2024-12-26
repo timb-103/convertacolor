@@ -167,9 +167,10 @@
         <form>
           <!-- hex -->
           <div class="form-group">
-            <label for="">HEX</label>
+            <label for="hex">HEX</label>
             <div class="input-group">
               <input
+                id="hex"
                 type="text"
                 placeholder="#FF9200"
                 v-model="hex"
@@ -177,7 +178,7 @@
                 :style="{ 'border-color': textColor, color: textColor }"
                 style="text-transform: uppercase"
               />
-              <button class="copy-button" @click.prevent="copy(hex)">
+              <button class="copy-button" @click.prevent="copy(hex)" title="Copy HEX color value">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path
                     :fill="textColor"
@@ -190,16 +191,29 @@
 
           <!-- rgb -->
           <div class="form-group">
-            <label for="" class="rgb-label">
+            <label for="rgb" class="rgb-label">
               <span>RGB</span>
-              <button v-if="is8BitMode" @click.prevent="is8BitMode = false" :style="{ color: textColor }">
+              <button
+                v-if="is8BitMode"
+                @click.prevent="is8BitMode = false"
+                :style="{ color: textColor }"
+                title="Switch to normalized mode (1.0, 1.0, 1.0)"
+              >
                 8-bit mode
               </button>
-              <button v-else @click.prevent="is8BitMode = true" :style="{ color: textColor }">Normalized</button>
+              <button
+                v-else
+                @click.prevent="is8BitMode = true"
+                :style="{ color: textColor }"
+                title="Switch to 8-bit mode (255, 255, 255)"
+              >
+                Normalized
+              </button>
             </label>
             <div class="input-group">
               <input
                 v-if="is8BitMode"
+                id="rgb"
                 type="text"
                 placeholder="rgb(255,255,255)"
                 v-model="rgb"
@@ -208,6 +222,7 @@
               />
               <input
                 v-else
+                id="rgb"
                 type="text"
                 placeholder="rgb(1,1,1)"
                 v-model="rgbNormalized"
@@ -215,7 +230,11 @@
                 :style="{ 'border-color': textColor, color: textColor }"
               />
 
-              <button class="copy-button" @click.prevent="copy(is8BitMode ? rgb : rgbNormalized)">
+              <button
+                class="copy-button"
+                @click.prevent="copy(is8BitMode ? rgb : rgbNormalized)"
+                title="Copy RGB color value"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path
                     :fill="textColor"
@@ -228,16 +247,17 @@
 
           <!-- hsl -->
           <div class="form-group">
-            <label for="">HSL</label>
+            <label for="hsl">HSL</label>
             <div class="input-group">
               <input
+                id="hsl"
                 type="text"
                 placeholder="hsl(255, 100%, 50%)"
                 v-model="hsl"
                 @input="onHslChange"
                 :style="{ 'border-color': textColor, color: textColor }"
               />
-              <button class="copy-button" @click.prevent="copy(hsl)">
+              <button class="copy-button" @click.prevent="copy(hsl)" title="Copy HSL color value">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path
                     :fill="textColor"
@@ -250,9 +270,10 @@
 
           <!-- cmyk -->
           <div class="form-group">
-            <label for="">CMYK</label>
+            <label for="cmyk">CMYK</label>
             <div class="input-group">
               <input
+                id="cmyk"
                 type="text"
                 placeholder="cmyk(100%, 0%, 0%, 0%)"
                 v-model="cmyk"
@@ -260,7 +281,7 @@
                 :style="{ 'border-color': textColor, color: textColor }"
               />
 
-              <button class="copy-button" @click.prevent="copy(cmyk)">
+              <button class="copy-button" @click.prevent="copy(cmyk)" title="Copy CMYK color value">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                   <path
                     :fill="textColor"
