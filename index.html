@@ -27,7 +27,7 @@
     <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
     <script defer data-domain="convertacolor.com" src="https://plausible.io/js/script.js"></script>
-    <script>
+    <script defer>
       window.plausible =
         window.plausible ||
         function () {
@@ -154,6 +154,17 @@
         font-family: "Fredoka", Arial, Verdana, sans-serif;
         text-align: center;
         font-size: 15px;
+      }
+
+      .copied-drawer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        background: #fff;
+        left: 0;
+        border-top: 1px solid #000;
+        transition: all 0.2s;
       }
     </style>
     <script type="text/javascript">
@@ -316,6 +327,10 @@
           Built by <a href="https://timb.com?ref=convertacolor" :style="{ color: textColor }">timb.com</a>
         </p>
       </div>
+
+      <div class="copied-drawer" :style="{transform: `translateY(${copied ? '0%' : '100%'})` }">
+        <p>Copied!</p>
+      </div>
     </div>
 
     <script type="module">
@@ -330,6 +345,7 @@
       const cmyk = "";
 
       const is8BitMode = true;
+      const copied = false;
 
       function generateColor() {
         const color = randomColor();
@@ -440,6 +456,11 @@
       function copy(text) {
         window.plausible("color:copied");
         navigator.clipboard.writeText(text);
+        this.copied = true;
+
+        setTimeout(() => {
+          this.copied = false;
+        }, 1000);
       }
 
       function updateTextColor(hex) {
@@ -455,6 +476,7 @@
         textColor,
         is8BitMode,
         copy,
+        copied,
         resetPage,
         generateColor,
         onHexChange,
