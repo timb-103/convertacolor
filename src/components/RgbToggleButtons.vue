@@ -6,7 +6,7 @@
     :style="{
       color: textColor,
     }"
-    class="text-xs h-6"
+    class="text-xs h-7"
     title="Switch to normalized mode (1.0, 1.0, 1.0)"
   >
     8-bit mode
@@ -19,7 +19,7 @@
     :style="{
       color: textColor,
     }"
-    class="text-xs h-6"
+    class="text-xs h-7"
     title="Switch to 8-bit mode (255, 255, 255)"
   >
     Normalized
