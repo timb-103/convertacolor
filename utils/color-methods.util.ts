@@ -1,23 +1,23 @@
 // Generates a random HEX color
 export function getRandomColor(): string {
   const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-  return `#${randomColor.padStart(6, "0")}`;
+  return `#${randomColor.padStart(6, '0')}`;
 }
 
 // Converts RGB values to a HEX color string
 export function rgbToHex(r: number, g: number, b: number): string {
   const bin = (r << 16) | (g << 8) | b;
-  return "#" + bin.toString(16).padStart(6, "0").toUpperCase();
+  return `#${bin.toString(16).padStart(6, '0').toUpperCase()}`;
 }
 
 // Converts a HEX color string to RGB values
 export function hexToRgb(hex: string): [number, number, number] {
-  hex = hex.replace("#", "");
+  hex = hex.replace('#', '');
   if (hex.length === 3) {
     hex = hex
-      .split("")
+      .split('')
       .map((c) => c + c)
-      .join("");
+      .join('');
   }
   const num = parseInt(hex, 16);
   return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
@@ -28,11 +28,11 @@ export function rgbToHsl(r: number, g: number, b: number): [number, number, numb
   r /= 255;
   g /= 255;
   b /= 255;
-  const max = Math.max(r, g, b),
-    min = Math.min(r, g, b);
-  let h = 0,
-    s = 0,
-    l = (max + min) / 2;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
 
   if (max !== min) {
     const d = max - min;
@@ -57,9 +57,9 @@ export function rgbToHsl(r: number, g: number, b: number): [number, number, numb
 export function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   s /= 100;
   l /= 100;
-  const k = (n: number) => (n + h / 30) % 12;
+  const k = (n: number): number => (n + h / 30) % 12;
   const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const f = (n: number): number => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
   return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
 }
 
@@ -96,8 +96,8 @@ export function cmykToRgb(c: number, m: number, y: number, k: number): [number, 
 
 // Extracts RGB values from a string
 export function extractRGB(color: string): [number, number, number] | null {
-  const match = color.replace(/\s+/g, "").match(/^rgb\((\d+),(\d+),(\d+)\)$/);
-  if (match) {
+  const match = color.replace(/\s+/g, '').match(/^rgb\((\d+),(\d+),(\d+)\)$/);
+  if (match !== null) {
     const r = parseInt(match[1], 10);
     const g = parseInt(match[2], 10);
     const b = parseInt(match[3], 10);
@@ -108,9 +108,9 @@ export function extractRGB(color: string): [number, number, number] | null {
 
 // Formats RGB string
 export function formatRgbString(r: number, g: number, b: number, isNormalized?: boolean): string {
-  if (isNormalized) {
+  if (isNormalized === true) {
     const normalized = normalizeRgb([r, g, b]);
-    return `rgb(${normalized.join(",")})`;
+    return `rgb(${normalized.join(',')})`;
   }
   return `rgb(${r},${g},${b})`;
 }
@@ -142,7 +142,7 @@ export function rgbLightness(r: number, g: number, b: number): number {
 
 // Calculates relative luminance
 export function luminance(r: number, g: number, b: number): number {
-  const toLinear = (c: number) => {
+  const toLinear = (c: number): number => {
     const v = c / 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
   };
@@ -155,7 +155,7 @@ export function luminance(r: number, g: number, b: number): number {
 // Calculates contrast ratio
 export function contrastRatio(
   rgb1: [number, number, number],
-  rgb2: [number, number, number],
+  rgb2: [number, number, number]
 ): number {
   const lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
   const lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
@@ -167,7 +167,7 @@ export function contrastRatio(
 // Lightens or darkens a color by a percentage
 export function adjustColor(
   rgb: [number, number, number],
-  percent: number,
+  percent: number
 ): [number, number, number] {
   return rgb.map((val) => Math.min(255, Math.max(0, Math.round(val + val * percent)))) as [
     number,
@@ -179,7 +179,7 @@ export function adjustColor(
 // Selects text color with the best contrast
 export function getTextColor(hex: string): string {
   const background = hexToRgb(hex);
-  const ratios: { color: string; ratio: number }[] = [];
+  const ratios: Array<{ color: string, ratio: number }> = [];
 
   function testColor(baseColor: [number, number, number], direction: number, steps: number): void {
     for (let i = 0; i <= steps; i++) {
@@ -194,7 +194,7 @@ export function getTextColor(hex: string): string {
 
   ratios.sort((a, b) => b.ratio - a.ratio);
   const bestColor = ratios.find((r) => r.ratio >= 7);
-  return bestColor ? bestColor.color : ratios[0].color;
+  return bestColor !== undefined ? bestColor.color : ratios[0].color;
 }
 
 // Normalizes RGB values (0-1 range)

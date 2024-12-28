@@ -7,15 +7,17 @@
       color: hex,
     }"
   >
-    <p class="font-[Fredoka]">Copied!</p>
+    <p class="font-[Fredoka]">
+      Copied!
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
 export interface Props {
-  copied: boolean;
-  textColor: string;
-  hex: string;
+  copied: boolean
+  textColor: string
+  hex: string
 }
 
 defineProps<Props>();

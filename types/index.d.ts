@@ -1,5 +1,7 @@
+export {};
+
 declare global {
   interface Window {
-    plausible: (value: string) => void;
+    plausible: any
   }
 }
