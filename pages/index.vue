@@ -93,6 +93,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { useMagicKeys } from '@vueuse/core';
 import {
@@ -125,40 +126,6 @@ const cmyk = ref('');
 const is8BitMode = ref(true);
 const copied = ref(false);
 const textColor = ref('');
-
-// Ensure a random color is generated client-side only
-const queryColor = route.query?.hex?.toString();
-const initialColor = ref('');
-
-if (process.client) {
-  initialColor.value = queryColor !== undefined && /^[0-9A-F]{6}$/i.test(queryColor)
-    ? `#${queryColor}`
-    : getRandomColor();
-  generateColor(initialColor.value);
-}
-
-const initialTextColor = getTextColor(initialColor.value);
-
-// Inject initial styles to prevent flash
-useHead({
-  title: 'HEX to RGB – Convert a Color',
-  meta: [
-    {
-      name: 'description',
-      content: 'HEX to RGB color format converter. Free, quick and easy.'
-    }
-  ],
-  style: [
-    {
-      children: `
-        body {
-          background-color: ${initialColor.value};
-          color: ${initialTextColor};
-        }
-      `
-    }
-  ]
-});
 
 // Generate and update color values
 function generateColor(color: string): void {
@@ -224,7 +191,7 @@ async function copy(text: string): Promise<void> {
   }, 1000);
 }
 
-// Handle query parameters
+// Query parameter handling
 function updateColorFromQuery(): void {
   const hexQuery = route.query?.hex?.toString();
   if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
@@ -242,8 +209,11 @@ function spacebarHit(): void {
 
 // Lifecycle hooks
 onMounted(() => {
-  if (queryColor !== undefined) {
-    generateColor(initialColor.value);
+  const hexQuery = route.query?.hex?.toString();
+  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
+    generateColor(`#${hexQuery}`);
+  } else {
+    generateColor(getRandomColor());
   }
 });
 
@@ -255,5 +225,16 @@ watch(space, (v) => {
 
 watch(route, () => {
   updateColorFromQuery();
+});
+
+// Set page metadata
+useHead({
+  title: 'Convert a Color – HEX, RGB, HSL, CMYK',
+  meta: [
+    {
+      name: 'description',
+      content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
+    }
+  ]
 });
 </script>
