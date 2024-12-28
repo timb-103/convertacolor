@@ -208,7 +208,7 @@ function spacebarHit(): void {
 }
 
 // Lifecycle hooks
-onMounted(() => {
+onBeforeMount(() => {
   const hexQuery = route.query?.hex?.toString();
   if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
     generateColor(`#${hexQuery}`);
