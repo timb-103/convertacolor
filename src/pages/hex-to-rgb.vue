@@ -88,7 +88,7 @@ import {
 } from "../utils/color-methods.util";
 
 useHead({
-  title: "HEX to RGB - Convert a Color",
+  title: "HEX to RGB – Convert a Color",
   meta: [
     {
       name: "description",
