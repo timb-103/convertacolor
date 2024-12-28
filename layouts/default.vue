@@ -1,5 +1,5 @@
 <template>
-  <ClientOnly>
+  <div>
     <NuxtLoadingIndicator color="#fff" />
 
     <!-- nav -->
@@ -49,7 +49,7 @@
         </p>
       </div>
     </footer>
-  </ClientOnly>
+  </div>
 </template>
 
 <script setup lang="ts">

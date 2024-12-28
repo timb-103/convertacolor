@@ -105,6 +105,35 @@ const is8BitMode = ref(true);
 const copied = ref(false);
 const textColor = ref('');
 
+// Check if there's a query color or generate one on SSR
+const queryColor = route.query?.hex?.toString();
+const initialColor = queryColor !== undefined && /^[0-9A-F]{6}$/i.test(queryColor)
+  ? `#${queryColor}`
+  : getRandomColor();
+
+const initialTextColor = getTextColor(initialColor);
+
+// Inject initial styles to prevent flash
+useHead({
+  title: 'HEX to RGB – Convert a Color',
+  meta: [
+    {
+      name: 'description',
+      content: 'HEX to RGB color format converter. Free, quick and easy.'
+    }
+  ],
+  style: [
+    {
+      children: `
+        body {
+          background-color: ${initialColor};
+          color: ${initialTextColor};
+        }
+      `
+    }
+  ]
+});
+
 // Generate and update color values
 function generateColor(color: string): void {
   const [r, g, b] = hexToRgb(color);
@@ -128,19 +157,17 @@ function updateTextColor(color: string): void {
   document.body.style.color = newValue;
 }
 
-// Handle HEX input change
+// Handle input changes
 function onHexChange(): void {
   generateColor(hex.value);
 }
 
-// Handle RGB input change
 function onRgbChange(): void {
   const colors = rgb.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
   const [r, g, b] = colors;
   generateColor(rgbToHex(r, g, b));
 }
 
-// Handle RGB normalized input change
 function onRgbNormalizedChange(): void {
   const colors = rgbNormalized.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
   const [r, g, b] = unnormalizeRgb(colors);
@@ -176,12 +203,7 @@ function spacebarHit(): void {
 
 // Lifecycle hooks
 onMounted(() => {
-  const hexQuery = route.query?.hex?.toString();
-  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
-    generateColor(`#${hexQuery}`);
-  } else {
-    generateColor(getRandomColor());
-  }
+  generateColor(initialColor);
 });
 
 watch(space, (v) => {
@@ -192,16 +214,5 @@ watch(space, (v) => {
 
 watch(route, () => {
   updateColorFromQuery();
-});
-
-// Set page metadata
-useHead({
-  title: 'HEX to RGB – Convert a Color',
-  meta: [
-    {
-      name: 'description',
-      content: 'HEX to RGB color format converter. Free, quick and easy.'
-    }
-  ]
 });
 </script>
