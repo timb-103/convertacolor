@@ -5,9 +5,7 @@
       <h1 class="text-center text-2xl font-[Fredoka]">HEX to RGB</h1>
 
       <!-- description -->
-      <p class="text-center mx-auto max-w-[250px] mt-2">
-        Convert HEX to RGB color formats.
-      </p>
+      <p class="text-center mx-auto max-w-[250px] mt-2">Convert HEX to RGB color formats.</p>
 
       <form class="max-w-sm mx-auto mt-4 space-y-4">
         <!-- hex -->
@@ -57,7 +55,9 @@
 
       <!-- spacebar description -->
       <div class="text-center my-8">
-        <p class="font-[Fredoka] text-center text-sm">Hit spacebar to convert a random HEX to RGB color</p>
+        <p class="font-[Fredoka] text-center text-sm">
+          Hit spacebar to convert a random HEX to RGB color
+        </p>
       </div>
 
       <!-- copied drawer -->
