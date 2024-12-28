@@ -2,7 +2,7 @@
   <div>
     <div class="max-w-lg mx-auto">
       <!-- title -->
-      <h1 class="text-center text-2xl font-[Fredoka]">HEX to RGB Converter</h1>
+      <h1 class="text-center text-2xl font-[Fredoka]">HEX to RGB Color Converter</h1>
 
       <!-- description -->
       <p class="text-center mx-auto max-w-[250px] mt-2">
@@ -88,7 +88,7 @@ import {
 } from "../utils/color-methods.util";
 
 useHead({
-  title: "HEX to RGB Converter - Convert a Color",
+  title: "HEX to RGB Color Converter - Convert a Color",
   meta: [
     {
       name: "description",
