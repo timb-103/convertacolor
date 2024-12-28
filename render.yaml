@@ -1,5 +1,5 @@
 services:
-  - type: webconvertacolor
+  - type: convertacolor
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
@@ -7,6 +7,3 @@ services:
       - type: rewrite
         source: /*
         destination: /
-      - type: rewrite
-        source: /tim
-        destination: /cool
