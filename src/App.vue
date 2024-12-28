@@ -12,7 +12,7 @@
         <RouterLink to="/" class="underline">Color Converter</RouterLink>
       </li>
       <li>
-        <RouterLink to="/rgb-to-hex" class="underline">RGB to HEX Converter</RouterLink>
+        <RouterLink to="/rgb-to-hex" class="underline">RGB to HEX</RouterLink>
       </li>
     </ul>
 
