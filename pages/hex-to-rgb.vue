@@ -105,12 +105,8 @@ const is8BitMode = ref(true);
 const copied = ref(false);
 const textColor = ref('');
 
-// Check if there's a query color or generate one on SSR
-const queryColor = route.query?.hex?.toString();
-const initialColor = queryColor !== undefined && /^[0-9A-F]{6}$/i.test(queryColor)
-  ? `#${queryColor}`
-  : getRandomColor();
-
+// Generate a random color during SSR
+const initialColor = getRandomColor();
 const initialTextColor = getTextColor(initialColor);
 
 // Inject initial styles to prevent flash
@@ -203,7 +199,12 @@ function spacebarHit(): void {
 
 // Lifecycle hooks
 onMounted(() => {
-  generateColor(initialColor);
+  const hexQuery = route.query?.hex?.toString();
+  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
+    generateColor(`#${hexQuery}`);
+  } else {
+    generateColor(initialColor); // Use pre-generated color during SSR
+  }
 });
 
 watch(space, (v) => {
