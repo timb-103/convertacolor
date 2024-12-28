@@ -2,11 +2,11 @@
   <div>
     <div class="max-w-lg mx-auto">
       <!-- title -->
-      <h1 class="text-center text-2xl font-[Fredoka]">Color Converter</h1>
+      <h1 class="text-center text-2xl font-[Fredoka]">HEX to RGB Converter</h1>
 
       <!-- description -->
-      <p class="text-center mx-auto max-w-[350px] mt-2">
-        Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.
+      <p class="text-center mx-auto max-w-[250px] mt-2">
+        Convert HEX to RGB color formats.
       </p>
 
       <form class="max-w-sm mx-auto mt-4 space-y-4">
@@ -53,31 +53,11 @@
             @on-input="onRgbNormalizedChange()"
           />
         </div>
-
-        <!-- hsl -->
-        <InputGroup
-          v-model="hsl"
-          label="HSL"
-          placeholder="hsl(255, 100%, 50%)"
-          :text-color="textColor"
-          @copy="copy(hsl)"
-          @on-input="onHslChange()"
-        />
-
-        <!-- cmyk -->
-        <InputGroup
-          v-model="cmyk"
-          label="CMYK"
-          placeholder="cmyk(100%, 0%, 0%, 0%)"
-          :text-color="textColor"
-          @copy="copy(cmyk)"
-          @on-input="onCmykChange()"
-        />
       </form>
 
       <!-- spacebar description -->
       <div class="text-center my-8">
-        <p class="font-[Fredoka] text-center text-sm">Hit spacebar to convert a random color</p>
+        <p class="font-[Fredoka] text-center text-sm">Hit spacebar to convert a random HEX to RGB color</p>
       </div>
 
       <!-- copied drawer -->
@@ -95,14 +75,12 @@ import InputGroup from "@/components/InputGroup.vue";
 import RgbToggleButtons from "@/components/RgbToggleButtons.vue";
 import CopiedDrawer from "@/components/CopiedDrawer.vue";
 import {
-  cmykToRgb,
   formatCmykString,
   formatHslString,
   formatRgbString,
   getRandomColor,
   getTextColor,
   hexToRgb,
-  hslToRgb,
   rgbToCmyk,
   rgbToHex,
   rgbToHsl,
@@ -110,11 +88,11 @@ import {
 } from "../utils/color-methods.util";
 
 useHead({
-  title: "Convert a Color – HEX, RGB, HSL, CMYK",
+  title: "HEX to RGB Converter - Convert a Color",
   meta: [
     {
       name: "description",
-      content: "Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.",
+      content: "Convert HEX to RGB color formats. Free, quick and easy.",
     },
   ],
 });
@@ -194,34 +172,6 @@ function onRgbNormalizedChange(): void {
   hex.value = rgbToHex(r, g, b);
   hsl.value = formatHslString(h, s, l);
   cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(hex.value);
-}
-
-function onHslChange(): void {
-  const colors = hsl.value.match(/\d+/g)?.map(Number);
-
-  const [h, s, l] = colors?.length === 3 ? colors : [0, 0, 0];
-  const [r, g, b] = hslToRgb(h, s, l);
-  const [c, m, y, k] = rgbToCmyk(r, g, b);
-
-  hex.value = rgbToHex(r, g, b);
-  rgb.value = formatRgbString(r, g, b);
-  rgbNormalized.value = formatRgbString(r, g, b, true);
-  cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(hex.value);
-}
-
-function onCmykChange(): void {
-  const [c, m, y, k] = cmyk.value.match(/\d+/g)?.map(Number) ?? [];
-  const [r, g, b] = cmykToRgb(c, m, y, k);
-  const [h, s, l] = rgbToHsl(r, g, b);
-
-  hex.value = rgbToHex(r, g, b);
-  rgb.value = formatRgbString(r, g, b);
-  rgbNormalized.value = formatRgbString(r, g, b, true);
-  hsl.value = formatHslString(h, s, l);
 
   updateTextColor(hex.value);
 }

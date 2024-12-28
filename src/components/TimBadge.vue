@@ -1,16 +1,10 @@
 <template>
   <p>
     Built by
-    <a href="https://timb.com?ref=convertacolor" class="underline" :style="{ color: textColor }">
+    <a href="https://timb.com?ref=convertacolor" class="underline" >
       timb.com
     </a>
   </p>
 </template>
 
-<script setup lang="ts">
-export interface Props {
-  textColor: string;
-}
-
-defineProps<Props>();
-</script>
+<script setup lang="ts"></script>
