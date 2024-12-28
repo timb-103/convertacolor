@@ -127,6 +127,31 @@ const is8BitMode = ref(true);
 const copied = ref(false);
 const textColor = ref('');
 
+// Generate a random color during SSR
+const initialColor = getRandomColor();
+const initialTextColor = getTextColor(initialColor);
+
+// Inject initial styles to prevent flash
+useHead({
+  title: 'Convert a Color – HEX, RGB, HSL, CMYK',
+  meta: [
+    {
+      name: 'description',
+      content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
+    }
+  ],
+  style: [
+    {
+      children: `
+        body {
+          background-color: ${initialColor};
+          color: ${initialTextColor};
+        }
+      `
+    }
+  ]
+});
+
 // Generate and update color values
 function generateColor(color: string): void {
   const [r, g, b] = hexToRgb(color);
@@ -213,7 +238,7 @@ onMounted(() => {
   if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
     generateColor(`#${hexQuery}`);
   } else {
-    generateColor(getRandomColor());
+    generateColor(initialColor); // Use pre-generated color during SSR
   }
 });
 
@@ -225,16 +250,5 @@ watch(space, (v) => {
 
 watch(route, () => {
   updateColorFromQuery();
-});
-
-// Set page metadata
-useHead({
-  title: 'Convert a Color – HEX, RGB, HSL, CMYK',
-  meta: [
-    {
-      name: 'description',
-      content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
-    }
-  ]
 });
 </script>
