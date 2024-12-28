@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtLoadingIndicator color="#5576ff" />
+    <NuxtLoadingIndicator color="#fff" />
 
     <!-- nav -->
     <nav class="text-center my-8 px-4">

@@ -92,31 +92,21 @@ import InputGroup from '@/components/InputGroup.vue';
 import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
 import CopiedDrawer from '@/components/CopiedDrawer.vue';
 
-useHead({
-  title: 'HEX to RGB – Convert a Color',
-  meta: [
-    {
-      name: 'description',
-      content: 'HEX to RGB color format converter. Free, quick and easy.'
-    }
-  ]
-});
-
 const { space } = useMagicKeys();
 const route = useRoute();
 
+// Reactive states
 const hex = ref('');
 const rgb = ref('');
 const rgbNormalized = ref('');
 const hsl = ref('');
 const cmyk = ref('');
-
 const is8BitMode = ref(true);
 const copied = ref(false);
-const textColor = ref('#000000');
+const textColor = ref('');
 
-function generateColor(): void {
-  const color = getRandomColor();
+// Generate and update color values
+function generateColor(color: string): void {
   const [r, g, b] = hexToRgb(color);
   const [h, s, l] = rgbToHsl(r, g, b);
   const [c, m, y, k] = rgbToCmyk(r, g, b);
@@ -130,56 +120,34 @@ function generateColor(): void {
   updateTextColor(color);
 }
 
+// Update text and background colors
+function updateTextColor(color: string): void {
+  const newValue = getTextColor(color);
+  textColor.value = newValue;
+  document.body.style.backgroundColor = color;
+  document.body.style.color = newValue;
+}
+
+// Handle HEX input change
 function onHexChange(): void {
-  const color = hex.value;
-  const [r, g, b] = hexToRgb(color);
-  const [h, s, l] = rgbToHsl(r, g, b);
-  const [c, m, y, k] = rgbToCmyk(r, g, b);
-
-  rgb.value = formatRgbString(r, g, b);
-  rgbNormalized.value = formatRgbString(r, g, b, true);
-  hsl.value = formatHslString(h, s, l);
-  cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(color);
+  generateColor(hex.value);
 }
 
+// Handle RGB input change
 function onRgbChange(): void {
-  const colors =
-    rgb.value.match(/-?\d+(\.\d+)?/g)?.map(Number)?.length === 3
-      ? (rgb.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0])
-      : [0, 0, 0];
-
+  const colors = rgb.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
   const [r, g, b] = colors;
-  const [h, s, l] = rgbToHsl(r, g, b);
-  const [c, m, y, k] = rgbToCmyk(r, g, b);
-
-  rgbNormalized.value = formatRgbString(r, g, b, true);
-  hex.value = rgbToHex(r, g, b);
-  hsl.value = formatHslString(h, s, l);
-  cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(hex.value);
+  generateColor(rgbToHex(r, g, b));
 }
 
+// Handle RGB normalized input change
 function onRgbNormalizedChange(): void {
-  const colors =
-    rgbNormalized.value.match(/-?\d+(\.\d+)?/g)?.map(Number)?.length === 3
-      ? unnormalizeRgb(rgbNormalized.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [])
-      : [0, 0, 0];
-
-  const [r, g, b] = colors;
-  const [h, s, l] = rgbToHsl(r, g, b);
-  const [c, m, y, k] = rgbToCmyk(r, g, b);
-
-  rgb.value = formatRgbString(r, g, b);
-  hex.value = rgbToHex(r, g, b);
-  hsl.value = formatHslString(h, s, l);
-  cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(hex.value);
+  const colors = rgbNormalized.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
+  const [r, g, b] = unnormalizeRgb(colors);
+  generateColor(rgbToHex(r, g, b));
 }
 
+// Copy text to clipboard
 async function copy(text: string): Promise<void> {
   window.plausible('color:copied');
   await navigator.clipboard.writeText(text);
@@ -190,38 +158,30 @@ async function copy(text: string): Promise<void> {
   }, 1000);
 }
 
-function updateTextColor(hex: string): void {
-  const newValue = getTextColor(hex);
-
-  textColor.value = newValue;
-  document.body.style.backgroundColor = hex;
-  document.body.style.color = newValue;
-}
-
+// Handle query parameters
 function updateColorFromQuery(): void {
-  const hexQuery = route.query?.hex;
-
-  if (hexQuery !== undefined && hexQuery !== null) {
-    if (/^[0-9A-F]{6}$/i.test(hexQuery.toString())) {
-      hex.value = `#${hexQuery.toString()}`;
-      onHexChange();
-    }
+  const hexQuery = route.query?.hex?.toString();
+  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
+    generateColor(`#${hexQuery}`);
   }
 }
 
+// Generate random color on spacebar hit
 function spacebarHit(): void {
-  void navigateTo({
-    query: {
-      hex: getRandomColor().replace('#', '')
-    }
-  });
-
+  const newColor = getRandomColor();
+  generateColor(newColor);
+  void navigateTo({ query: { hex: newColor.replace('#', '') } });
   window.plausible('random-color:generated');
 }
 
+// Lifecycle hooks
 onMounted(() => {
-  generateColor();
-  updateColorFromQuery();
+  const hexQuery = route.query?.hex?.toString();
+  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
+    generateColor(`#${hexQuery}`);
+  } else {
+    generateColor(getRandomColor());
+  }
 });
 
 watch(space, (v) => {
@@ -232,5 +192,16 @@ watch(space, (v) => {
 
 watch(route, () => {
   updateColorFromQuery();
+});
+
+// Set page metadata
+useHead({
+  title: 'HEX to RGB – Convert a Color',
+  meta: [
+    {
+      name: 'description',
+      content: 'HEX to RGB color format converter. Free, quick and easy.'
+    }
+  ]
 });
 </script>
