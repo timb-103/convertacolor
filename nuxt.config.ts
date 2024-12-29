@@ -101,6 +101,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+  spaLoadingTemplate: "spa-loading-template.html",
   css: [
     '@/assets/css/global.css'
   ],
