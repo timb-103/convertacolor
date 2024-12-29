@@ -21,6 +21,7 @@ interface ColorTools {
   cmyk: Ref<string>
   textColor: Ref<string>
   is8BitMode: Ref<boolean>
+  hexQuery: Ref<string | undefined>
   generateColor: (color: string) => void
   initialize: (color?: string) => void
   handleColorChange: (
@@ -68,9 +69,12 @@ export function useColorTools(): ColorTools {
     const newValue = getTextColor(color);
     textColor.value = newValue;
 
-    if (document !== undefined) {
-      document.body.style.backgroundColor = color;
-      document.body.style.color = newValue;
+    const colorValid = validateHex(color);
+
+    // wtf eslit??
+    if (colorValid === true) {
+      document.documentElement.style.setProperty('--color', color);
+      document.documentElement.style.setProperty('--text-color', newValue);
     }
   }
 
@@ -127,12 +131,10 @@ export function useColorTools(): ColorTools {
   });
 
   onMounted(() => {
+    const currentColor = (document as any).colorCache as string;
+    (document as any).colorCache = undefined;
     initialize(
-      hexQuery.value ??
-        document.head
-          .querySelector('meta[name="bg-color"]')
-          ?.getAttribute('content')
-          ?.toString()
+      hexQuery.value ?? currentColor
     );
   });
 
@@ -144,6 +146,7 @@ export function useColorTools(): ColorTools {
     cmyk,
     textColor,
     is8BitMode,
+    hexQuery,
     initialize,
     generateColor,
     handleColorChange

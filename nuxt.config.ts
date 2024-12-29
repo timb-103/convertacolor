@@ -1,5 +1,10 @@
 export default defineNuxtConfig({
   ssr: true,
+
+  devtools: {
+    enabled: false
+  },
+
   app: {
     head: {
       charset: 'utf-8',

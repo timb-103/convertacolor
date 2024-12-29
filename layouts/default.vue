@@ -19,20 +19,10 @@
       <!-- page links -->
       <ul class="flex gap-4 flex-wrap items-center justify-center mb-4">
         <li>
-          <RouterLink
-            to="/"
-            class="underline"
-          >
-            Color Converter
-          </RouterLink>
+          <RouterLink to="/" class="underline"> Color Converter </RouterLink>
         </li>
         <li>
-          <RouterLink
-            to="/hex-to-rgb"
-            class="underline"
-          >
-            HEX to RGB
-          </RouterLink>
+          <RouterLink to="/hex-to-rgb" class="underline"> HEX to RGB </RouterLink>
         </li>
       </ul>
 
@@ -40,12 +30,7 @@
       <div class="text-center">
         <p>
           Built by
-          <a
-            href="https://timb.com?ref=convertacolor"
-            class="underline"
-          >
-            timb.com
-          </a>
+          <a href="https://timb.com?ref=convertacolor" class="underline"> timb.com </a>
         </p>
       </div>
     </footer>

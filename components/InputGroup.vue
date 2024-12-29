@@ -17,8 +17,8 @@
         type="text"
         :placeholder="placeholder"
         :style="{
-          'border-color': textColor,
-          color: textColor,
+          'border-color': 'currentColor',
+          color: 'currentColor',
         }"
         :class="{
           uppercase: label === 'HEX',
@@ -30,7 +30,7 @@
       <!-- copy button -->
       <div class="absolute right-0 top-2">
         <CopyButton
-          :fill="textColor"
+          fill="currentColor"
           :title="`Copy ${label} color value`"
           @copy="$emit('copy')"
         />
@@ -45,7 +45,6 @@ import CopyButton from './CopyButton.vue';
 export interface Props {
   label: string
   placeholder: string
-  textColor: string
 }
 
 defineProps<Props>();
