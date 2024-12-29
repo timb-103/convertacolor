@@ -5,3 +5,11 @@
   font-style: normal;
   font-display: swap;
 }
+
+body {
+  background-color: #000000;
+  transition: background-color 0.3s ease;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
