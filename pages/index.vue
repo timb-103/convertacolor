@@ -19,7 +19,7 @@
           placeholder="#FF9200"
           :text-color="textColor"
           @copy="copy(hex)"
-          @on-input="onHexChange()"
+          @on-input="handleColorChange(hex, 'hex')"
         />
 
         <!-- rgb -->
@@ -41,7 +41,7 @@
             placeholder="rgb(255,255,255)"
             :text-color="textColor"
             @copy="copy(rgb)"
-            @on-input="onRgbChange()"
+            @on-input="handleColorChange(rgb, 'rgb')"
           />
 
           <!-- normalized mode -->
@@ -52,7 +52,7 @@
             placeholder="rgb(1,1,1)"
             :text-color="textColor"
             @copy="copy(rgbNormalized)"
-            @on-input="onRgbNormalizedChange()"
+            @on-input="handleColorChange(rgbNormalized, 'normalized')"
           />
         </div>
 
@@ -63,7 +63,7 @@
           placeholder="hsl(255, 100%, 50%)"
           :text-color="textColor"
           @copy="copy(hsl)"
-          @on-input="onHslChange()"
+          @on-input="handleColorChange(hsl, 'hsl')"
         />
 
         <!-- cmyk -->
@@ -73,7 +73,7 @@
           placeholder="cmyk(100%, 0%, 0%, 0%)"
           :text-color="textColor"
           @copy="copy(cmyk)"
-          @on-input="onCmykChange()"
+          @on-input="handleColorChange(cmyk, 'cmyk')"
         />
       </form>
 
@@ -88,50 +88,34 @@
       <CopiedDrawer
         :text-color="textColor"
         :hex="hex"
-        :copied="copied"
+        :copied="isCopied"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useMagicKeys } from '@vueuse/core';
-import {
-  cmykToRgb,
-  formatCmykString,
-  formatHslString,
-  formatRgbString,
-  getRandomColor,
-  getTextColor,
-  hexToRgb,
-  hslToRgb,
-  rgbToCmyk,
-  rgbToHex,
-  rgbToHsl,
-  unnormalizeRgb
-} from '../utils/color-methods.util';
 import InputGroup from '@/components/InputGroup.vue';
 import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
 import CopiedDrawer from '@/components/CopiedDrawer.vue';
+import { useColorTools } from '~/composables/colors.composable';
 
-const { space } = useMagicKeys();
-const route = useRoute();
+const {
+  hex,
+  rgb,
+  rgbNormalized,
+  hsl,
+  cmyk,
+  textColor,
+  is8BitMode,
+  handleColorChange
+} = useColorTools();
 
-// Reactive states
-const hex = ref('');
-const rgb = ref('');
-const rgbNormalized = ref('');
-const hsl = ref('');
-const cmyk = ref('');
-const is8BitMode = ref(true);
-const copied = ref(false);
-const textColor = ref('');
+const {
+  isCopied,
+  copy
+} = useCopy();
 
-// Generate a random color during SSR
-const initialColor = getRandomColor();
-const initialTextColor = getTextColor(initialColor);
-
-// Inject initial styles to prevent flash
 useHead({
   title: 'Convert a Color – HEX, RGB, HSL, CMYK',
   meta: [
@@ -139,116 +123,6 @@ useHead({
       name: 'description',
       content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
     }
-  ],
-  style: [
-    {
-      children: `
-        body {
-          background-color: ${initialColor};
-          color: ${initialTextColor};
-        }
-      `
-    }
   ]
-});
-
-// Generate and update color values
-function generateColor(color: string): void {
-  const [r, g, b] = hexToRgb(color);
-  const [h, s, l] = rgbToHsl(r, g, b);
-  const [c, m, y, k] = rgbToCmyk(r, g, b);
-
-  hex.value = color;
-  rgb.value = formatRgbString(r, g, b);
-  rgbNormalized.value = formatRgbString(r, g, b, true);
-  hsl.value = formatHslString(h, s, l);
-  cmyk.value = formatCmykString(c, m, y, k);
-
-  updateTextColor(color);
-}
-
-// Update text and background colors
-function updateTextColor(color: string): void {
-  const newValue = getTextColor(color);
-  textColor.value = newValue;
-  document.body.style.backgroundColor = color;
-  document.body.style.color = newValue;
-}
-
-// Handle input changes
-function onHexChange(): void {
-  generateColor(hex.value);
-}
-
-function onRgbChange(): void {
-  const colors = rgb.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
-  const [r, g, b] = colors;
-  generateColor(rgbToHex(r, g, b));
-}
-
-function onRgbNormalizedChange(): void {
-  const colors = rgbNormalized.value.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
-  const [r, g, b] = unnormalizeRgb(colors);
-  generateColor(rgbToHex(r, g, b));
-}
-
-function onHslChange(): void {
-  const colors = hsl.value.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
-  const [h, s, l] = colors;
-  const [r, g, b] = hslToRgb(h, s, l);
-  generateColor(rgbToHex(r, g, b));
-}
-
-function onCmykChange(): void {
-  const [c, m, y, k] = cmyk.value.match(/\d+/g)?.map(Number) ?? [];
-  const [r, g, b] = cmykToRgb(c, m, y, k);
-  generateColor(rgbToHex(r, g, b));
-}
-
-// Copy text to clipboard
-async function copy(text: string): Promise<void> {
-  window.plausible('color:copied');
-  await navigator.clipboard.writeText(text);
-  copied.value = true;
-
-  setTimeout(() => {
-    copied.value = false;
-  }, 1000);
-}
-
-// Query parameter handling
-function updateColorFromQuery(): void {
-  const hexQuery = route.query?.hex?.toString();
-  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
-    generateColor(`#${hexQuery}`);
-  }
-}
-
-// Generate random color on spacebar hit
-function spacebarHit(): void {
-  const newColor = getRandomColor();
-  generateColor(newColor);
-  void navigateTo({ query: { hex: newColor.replace('#', '') } });
-  window.plausible('random-color:generated');
-}
-
-// Lifecycle hooks
-onMounted(() => {
-  const hexQuery = route.query?.hex?.toString();
-  if (hexQuery !== undefined && /^[0-9A-F]{6}$/i.test(hexQuery)) {
-    generateColor(`#${hexQuery}`);
-  } else {
-    generateColor(initialColor); // Use pre-generated color during SSR
-  }
-});
-
-watch(space, (v) => {
-  if (v) {
-    spacebarHit();
-  }
-});
-
-watch(route, () => {
-  updateColorFromQuery();
 });
 </script>
