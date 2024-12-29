@@ -127,13 +127,7 @@ export function useColorTools(): ColorTools {
   });
 
   onMounted(() => {
-    initialize(
-      hexQuery.value ??
-        document.head
-          .querySelector('meta[name="bg-color"]')
-          ?.getAttribute('content')
-          ?.toString()
-    );
+    initialize(hexQuery.value);
   });
 
   return {
