@@ -1,9 +1,0 @@
-services:
-  - type: convertacolor
-    runtime: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /
