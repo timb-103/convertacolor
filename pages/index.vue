@@ -28,7 +28,6 @@
           <div class="absolute right-0 top-0">
             <RgbToggleButtons
               :is-8-bit-mode="is8BitMode"
-              :text-color="textColor"
               @toggleMode="(value) => (is8BitMode = value)"
             />
           </div>

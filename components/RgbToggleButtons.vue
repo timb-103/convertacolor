@@ -3,7 +3,7 @@
   <button
     v-if="is8BitMode"
     :style="{
-      color: textColor,
+      color: 'currentColor',
     }"
     class="text-xs h-7"
     title="Switch to normalized mode (1.0, 1.0, 1.0)"
@@ -16,7 +16,7 @@
   <button
     v-else
     :style="{
-      color: textColor,
+      color: 'currentColor',
     }"
     class="text-xs h-7"
     title="Switch to 8-bit mode (255, 255, 255)"
@@ -29,7 +29,6 @@
 <script setup lang="ts">
 export interface Props {
   is8BitMode: boolean
-  textColor: string
 }
 
 defineProps<Props>();
