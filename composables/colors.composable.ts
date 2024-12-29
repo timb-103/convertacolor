@@ -1,4 +1,4 @@
-import { useMagicKeys } from '@vueuse/core';
+import { useMagicKeys } from "@vueuse/core";
 import {
   cmykToRgb,
   formatCmykString,
@@ -10,40 +10,41 @@ import {
   rgbToCmyk,
   rgbToHex,
   rgbToHsl,
-  unnormalizeRgb
-} from '@/utils/color-methods.util';
+  unnormalizeRgb,
+} from "@/utils/color-methods.util";
 
 interface ColorTools {
-  hex: Ref<string>
-  rgb: Ref<string>
-  rgbNormalized: Ref<string>
-  hsl: Ref<string>
-  cmyk: Ref<string>
-  textColor: Ref<string>
-  is8BitMode: Ref<boolean>
-  generateColor: (color: string) => void
-  initialize: (color?: string) => void
+  hex: Ref<string>;
+  rgb: Ref<string>;
+  rgbNormalized: Ref<string>;
+  hsl: Ref<string>;
+  cmyk: Ref<string>;
+  textColor: Ref<string>;
+  is8BitMode: Ref<boolean>;
+  generateColor: (color: string) => void;
+  initialize: (color?: string) => void;
   handleColorChange: (
     input: string,
-    type: 'hex' | 'rgb' | 'hsl' | 'cmyk' | 'normalized'
-  ) => void
+    type: "hex" | "rgb" | "hsl" | "cmyk" | "normalized"
+  ) => void;
 }
 
 export function useColorTools(): ColorTools {
   const { space } = useMagicKeys();
   const route = useRoute();
 
-  const hex = ref<string>('');
-  const rgb = ref<string>('');
-  const rgbNormalized = ref<string>('');
-  const hsl = ref<string>('');
-  const cmyk = ref<string>('');
+  const hex = ref<string>("");
+  const rgb = ref<string>("");
+  const rgbNormalized = ref<string>("");
+  const hsl = ref<string>("");
+  const cmyk = ref<string>("");
   const is8BitMode = ref<boolean>(true);
-  const textColor = ref<string>('');
+  const textColor = ref<string>("");
 
-  const hexQuery = computed(() => /^[0-9A-F]{6}$/i.test(route.query.hex?.toString() ?? '')
-    ? `#${route.query.hex?.toString()}`
-    : undefined
+  const hexQuery = computed(() =>
+    /^[0-9A-F]{6}$/i.test(route.query.hex?.toString() ?? "")
+      ? `#${route.query.hex?.toString()}`
+      : undefined
   );
 
   function initialize(color?: string): void {
@@ -76,32 +77,36 @@ export function useColorTools(): ColorTools {
 
   function handleColorChange(
     input: string,
-    type: 'hex' | 'rgb' | 'hsl' | 'cmyk' | 'normalized'
+    type: "hex" | "rgb" | "hsl" | "cmyk" | "normalized"
   ): void {
     switch (type) {
-      case 'hex': {
+      case "hex": {
         const color = input;
         generateColor(color);
         break;
       }
-      case 'rgb': {
-        const [r, g, b] = input.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
+      case "rgb": {
+        const [r, g, b] = input.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [
+          0, 0, 0,
+        ];
         generateColor(rgbToHex(r, g, b));
         break;
       }
-      case 'normalized': {
-        const normalizedValues = input.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [0, 0, 0];
+      case "normalized": {
+        const normalizedValues = input.match(/-?\d+(\.\d+)?/g)?.map(Number) ?? [
+          0, 0, 0,
+        ];
         const [r, g, b] = unnormalizeRgb(normalizedValues);
         generateColor(rgbToHex(r, g, b));
         break;
       }
-      case 'hsl': {
+      case "hsl": {
         const [h, s, l] = input.match(/\d+/g)?.map(Number) ?? [0, 0, 0];
         const [r, g, b] = hslToRgb(h, s, l);
         generateColor(rgbToHex(r, g, b));
         break;
       }
-      case 'cmyk': {
+      case "cmyk": {
         const [c, m, y, k] = input.match(/\d+/g)?.map(Number) ?? [0, 0, 0, 0];
         const [r, g, b] = cmykToRgb(c, m, y, k);
         generateColor(rgbToHex(r, g, b));
@@ -115,10 +120,10 @@ export function useColorTools(): ColorTools {
       initialize();
 
       await navigateTo({
-        query: { hex: hex.value.replace('#', '') }
+        query: { hex: hex.value.replace("#", "") },
       });
 
-      window.plausible('random-color:generated');
+      window.plausible("random-color:generated");
     }
   });
 
@@ -140,6 +145,6 @@ export function useColorTools(): ColorTools {
     is8BitMode,
     initialize,
     generateColor,
-    handleColorChange
+    handleColorChange,
   };
 }

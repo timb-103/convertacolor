@@ -2,13 +2,12 @@
   <div>
     <div class="max-w-lg mx-auto">
       <!-- title -->
-      <h1 class="text-center text-2xl font-[Fredoka]">
-        Color Converter
-      </h1>
+      <h1 class="text-center text-2xl font-[Fredoka]">Color Converter</h1>
 
       <!-- description -->
       <p class="text-center mx-auto max-w-[350px] mt-2">
-        Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.
+        Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful
+        and fast.
       </p>
 
       <form class="max-w-sm mx-auto mt-4 space-y-4">
@@ -25,7 +24,7 @@
         <!-- rgb -->
         <div class="relative">
           <!-- rgb toggle mode buttons -->
-          <div class="absolute right-0 top-0">
+          <div class="absolute top-0 right-0">
             <RgbToggleButtons
               :is-8-bit-mode="is8BitMode"
               :text-color="textColor"
@@ -78,27 +77,23 @@
       </form>
 
       <!-- spacebar description -->
-      <div class="text-center my-8">
+      <div class="my-8 text-center">
         <p class="font-[Fredoka] text-center text-sm">
           Hit spacebar to convert a random color
         </p>
       </div>
 
       <!-- copied drawer -->
-      <CopiedDrawer
-        :text-color="textColor"
-        :hex="hex"
-        :copied="isCopied"
-      />
+      <CopiedDrawer :text-color="textColor" :hex="hex" :copied="isCopied" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import InputGroup from '@/components/InputGroup.vue';
-import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
-import CopiedDrawer from '@/components/CopiedDrawer.vue';
-import { useColorTools } from '~/composables/colors.composable';
+import InputGroup from "@/components/InputGroup.vue";
+import RgbToggleButtons from "@/components/RgbToggleButtons.vue";
+import CopiedDrawer from "@/components/CopiedDrawer.vue";
+import { useColorTools } from "~/composables/colors.composable";
 
 const {
   hex,
@@ -108,21 +103,19 @@ const {
   cmyk,
   textColor,
   is8BitMode,
-  handleColorChange
+  handleColorChange,
 } = useColorTools();
 
-const {
-  isCopied,
-  copy
-} = useCopy();
+const { isCopied, copy } = useCopy();
 
 useHead({
-  title: 'Convert a Color – HEX, RGB, HSL, CMYK',
+  title: "Convert a Color – HEX, RGB, HSL, CMYK",
   meta: [
     {
-      name: 'description',
-      content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
-    }
-  ]
+      name: "description",
+      content:
+        "Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.",
+    },
+  ],
 });
 </script>
