@@ -46,35 +46,6 @@ export function useColorTools(): ColorTools {
     : undefined
   );
 
-  if (import.meta.env.SSR) {
-    const newColor =
-      route.query.hex === undefined || route.query.hex === null
-        ? getRandomColor(false)
-        : route.query.hex.toString();
-    const newTextColor = getTextColor(newColor);
-
-    textColor.value = newTextColor;
-    generateColor(`#${newColor}`);
-    useHead({
-      style: [
-        {
-          children: `
-          body {
-            background-color: #${newColor};
-            color: ${newTextColor};
-          }
-        `
-        }
-      ],
-      meta: [
-        {
-          name: 'bg-color',
-          content: `#${newColor}`
-        }
-      ]
-    });
-  }
-
   function initialize(color?: string): void {
     generateColor(color ?? getRandomColor());
   }
@@ -156,13 +127,7 @@ export function useColorTools(): ColorTools {
   });
 
   onMounted(() => {
-    initialize(
-      hexQuery.value ??
-        document.head
-          .querySelector('meta[name="bg-color"]')
-          ?.getAttribute('content')
-          ?.toString()
-    );
+    initialize(hexQuery.value);
   });
 
   return {
