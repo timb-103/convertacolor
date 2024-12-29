@@ -28,6 +28,18 @@ export default defineNuxtConfig({
         { name: 'msapplication-TileColor', content: '#ffffff' },
         { name: 'msapplication-TileImage', content: '/images/ms-icon-144x144.png' },
         { name: 'theme-color', content: '#ffffff' }
+      ],
+      script: [
+        {
+          innerHTML: `
+            (function() {
+              const hex = '#' + (new URLSearchParams(window.location.search).get('hex') ?? Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0'));
+              document.write('<style>body { background-color: ' + hex + '; }</style>');
+              document.write('<meta name="bg-color" content="' + hex + '">');
+            })();
+        `,
+          type: 'text/javascript'
+        }
       ]
     }
   },
