@@ -206,3 +206,15 @@ export function normalizeRgb(rgb: [number, number, number]): string[] {
 export function unnormalizeRgb(rgb: number[]): [number, number, number] {
   return rgb.map((val) => Math.round(val * 255)) as [number, number, number];
 }
+
+export function validateHex(v: string): boolean {
+  let color2 = '';
+  const el = document.createElement('div');
+  el.style.borderColor = v;
+
+  color2 = el.style.borderColor;
+
+  if (color2.length === 0) return false;
+
+  return true;
+}

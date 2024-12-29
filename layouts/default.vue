@@ -40,14 +40,6 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
 
-const { initialize, hexQuery } = useColorTools();
-
-const route = useRoute();
-
-watch(() => route.fullPath, () => {
-  initialize(hexQuery.value);
-});
-
 onMounted(() => {
   /** @description hack to always set to light mode until we add dark mode properly */
   const colorMode = useLocalStorage('nuxt-color-mode', 'light');

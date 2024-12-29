@@ -70,6 +70,9 @@
         .padStart(6, "0"));
   const textColor = getTextColor(hex);
 
+
+  document.colorCache = hex
+  document.textColorCache = textColor
   document.documentElement.style.setProperty('--color', hex)
   document.documentElement.style.setProperty('--text-color', textColor)
 })();
