@@ -2,9 +2,7 @@
   <div>
     <div class="max-w-lg mx-auto">
       <!-- title -->
-      <h1 class="text-center text-2xl font-[Fredoka]">
-        RGB to HEX
-      </h1>
+      <h1 class="text-center text-2xl font-[Fredoka]">RGB to HEX</h1>
 
       <!-- description -->
       <p class="text-center mx-auto max-w-[250px] mt-2">
@@ -15,7 +13,7 @@
         <!-- rgb -->
         <div class="relative">
           <!-- rgb toggle mode buttons -->
-          <div class="absolute right-0 top-0">
+          <div class="absolute top-0 right-0">
             <RgbToggleButtons
               :is-8-bit-mode="is8BitMode"
               :text-color="textColor"
@@ -58,48 +56,35 @@
       </form>
 
       <!-- spacebar description -->
-      <div class="text-center my-8">
+      <div class="my-8 text-center">
         <p class="font-[Fredoka] text-center text-sm">
           Hit spacebar to convert a random RGB to HEX color
         </p>
       </div>
 
       <!-- copied drawer -->
-      <CopiedDrawer
-        :text-color="textColor"
-        :hex="hex"
-        :copied="isCopied"
-      />
+      <CopiedDrawer :text-color="textColor" :hex="hex" :copied="isCopied" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import InputGroup from '@/components/InputGroup.vue';
-import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
-import CopiedDrawer from '@/components/CopiedDrawer.vue';
+import InputGroup from "@/components/InputGroup.vue";
+import RgbToggleButtons from "@/components/RgbToggleButtons.vue";
+import CopiedDrawer from "@/components/CopiedDrawer.vue";
 
-const {
-  hex,
-  rgb,
-  rgbNormalized,
-  textColor,
-  is8BitMode,
-  handleColorChange
-} = useColorTools();
+const { hex, rgb, rgbNormalized, textColor, is8BitMode, handleColorChange } =
+  useColorTools();
 
-const {
-  isCopied,
-  copy
-} = useCopy();
+const { isCopied, copy } = useCopy();
 
 useHead({
-  title: 'RGB to HEX – Convert a Color',
+  title: "RGB to HEX – Convert a Color",
   meta: [
     {
-      name: 'description',
-      content: 'RGB to HEX color format converter. Free, quick and easy.'
-    }
-  ]
+      name: "description",
+      content: "RGB to HEX color format converter. Free, quick and easy.",
+    },
+  ],
 });
 </script>
