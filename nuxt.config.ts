@@ -1,6 +1,8 @@
 export default defineNuxtConfig({
   ssr: false,
-  // ssr: true,
+  devtools: {
+    enabled: false
+  },
   app: {
     head: {
       charset: "utf-8",
@@ -87,21 +89,22 @@ export default defineNuxtConfig({
         { rel: "manifest", href: "/manifest.json" },
       ],
       meta: [
-        { name: "msapplication-TileColor", content: "#ffffff" },
-        {
-          name: "msapplication-TileImage",
-          content: "/images/ms-icon-144x144.png",
-        },
-        { name: "theme-color", content: "#ffffff" },
+        { name: 'msapplication-TileColor', content: '#ffffff' },
+        { name: 'msapplication-TileImage', content: '/images/ms-icon-144x144.png' },
+        { name: 'theme-color', content: '#ffffff' }
       ],
-      bodyAttrs: {
-        id: "root_body",
-      },
-    },
+      script: [
+        {
+          src: '/load.js',
+          type: 'text/javascript'
+        }
+      ]
+    }
   },
-  spaLoadingTemplate: "spa-loading-template.html",
-  css: ["@/assets/css/global.css"],
-  modules: ["@nuxtjs/plausible", "@nuxtjs/tailwindcss"],
+  css: [
+    '@/assets/css/global.css'
+  ],
+  modules: ['@nuxtjs/plausible', '@nuxtjs/tailwindcss'],
   tailwindcss: {
     viewer: false,
   },

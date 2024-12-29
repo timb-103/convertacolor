@@ -5,3 +5,8 @@
   font-style: normal;
   font-display: swap;
 }
+
+body {
+  background: var(--color);
+  color: var(--text-color);
+}

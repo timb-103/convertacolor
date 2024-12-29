@@ -14,15 +14,16 @@ import {
 } from "@/utils/color-methods.util";
 
 interface ColorTools {
-  hex: Ref<string>;
-  rgb: Ref<string>;
-  rgbNormalized: Ref<string>;
-  hsl: Ref<string>;
-  cmyk: Ref<string>;
-  textColor: Ref<string>;
-  is8BitMode: Ref<boolean>;
-  generateColor: (color: string) => void;
-  initialize: (color?: string) => void;
+  hex: Ref<string>
+  rgb: Ref<string>
+  rgbNormalized: Ref<string>
+  hsl: Ref<string>
+  cmyk: Ref<string>
+  textColor: Ref<string>
+  is8BitMode: Ref<boolean>
+  hexQuery: Ref<string | undefined>
+  generateColor: (color: string) => void
+  initialize: (color?: string) => void
   handleColorChange: (
     input: string,
     type: "hex" | "rgb" | "hsl" | "cmyk" | "normalized"
@@ -69,9 +70,12 @@ export function useColorTools(): ColorTools {
     const newValue = getTextColor(color);
     textColor.value = newValue;
 
-    if (document !== undefined) {
-      document.body.style.backgroundColor = color;
-      document.body.style.color = newValue;
+    const colorValid = validateHex(color);
+
+    // wtf eslit??
+    if (colorValid === true) {
+      document.documentElement.style.setProperty('--color', color);
+      document.documentElement.style.setProperty('--text-color', newValue);
     }
   }
 
@@ -132,7 +136,11 @@ export function useColorTools(): ColorTools {
   });
 
   onMounted(() => {
-    initialize(hexQuery.value);
+    const currentColor = (document as any).colorCache as string;
+    (document as any).colorCache = undefined;
+    initialize(
+      hexQuery.value ?? currentColor
+    );
   });
 
   return {
@@ -143,6 +151,7 @@ export function useColorTools(): ColorTools {
     cmyk,
     textColor,
     is8BitMode,
+    hexQuery,
     initialize,
     generateColor,
     handleColorChange,

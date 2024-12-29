@@ -25,6 +25,7 @@
           <RouterLink to="/hex-to-rgb" class="underline">
             HEX to RGB
           </RouterLink>
+          <RouterLink to="/hex-to-rgb" class="underline"> HEX to RGB </RouterLink>
         </li>
       </ul>
 
@@ -35,6 +36,7 @@
           <a href="https://timb.com?ref=convertacolor" class="underline">
             timb.com
           </a>
+          <a href="https://timb.com?ref=convertacolor" class="underline"> timb.com </a>
         </p>
       </div>
     </footer>
