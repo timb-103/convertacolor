@@ -55,31 +55,6 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
 
-// Generate a random color during SSR
-const initialColor = useState<string>('initialColor');
-const initialTextColor = useState<string>('initialTextColor');
-
-// Inject initial styles to prevent flash
-useHead({
-  title: 'Convert a Color – HEX, RGB, HSL, CMYK',
-  meta: [
-    {
-      name: 'description',
-      content: 'Convert colors between formats HEX, RGB, HSL and CMYK. Simple, beautiful and fast.'
-    }
-  ]
-  // style: [
-  //   {
-  //     children: `
-  //       body {
-  //         background-color: ${initialColor.value};
-  //         color: ${initialTextColor.value};
-  //       }
-  //     `
-  //   }
-  // ]
-});
-
 onMounted(() => {
   /** @description hack to always set to light mode until we add dark mode properly */
   const colorMode = useLocalStorage('nuxt-color-mode', 'light');
