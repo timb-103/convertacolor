@@ -61,6 +61,62 @@
     });
     return bestColor !== undefined ? bestColor.color : ratios[0].color;
   }
+  function rgbToHsl(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+    var h = 0;
+    var s = 0;
+    var l = (max + min) / 2;
+    if (max !== min) {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0);
+          break;
+        case g:
+          h = (b - r) / d + 2;
+          break;
+        case b:
+          h = (r - g) / d + 4;
+          break;
+      }
+      h /= 6;
+    }
+    return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+  }
+  function rgbToCmyk(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    var k = Math.min(1 - r, 1 - g, 1 - b);
+    if (k === 1) return [0, 0, 0, 100];
+    var c = Math.round(((1 - r - k) / (1 - k)) * 100);
+    var m = Math.round(((1 - g - k) / (1 - k)) * 100);
+    var y = Math.round(((1 - b - k) / (1 - k)) * 100);
+    var kRounded = Math.round(k * 100);
+    return [c, m, y, kRounded];
+  }
+  function formatRgbString(r, g, b, isNormalized) {
+    if (isNormalized === true) {
+      var normalized = normalizeRgb([r, g, b]);
+      return "rgb(".concat(normalized.join(","), ")");
+    }
+    return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
+  }
+  function formatHslString(h, s, l) {
+    return "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
+  }
+  function formatCmykString(c, m, y, k) {
+    return "cmyk("
+      .concat(c !== null && c !== void 0 ? c : 0, ",")
+      .concat(m !== null && m !== void 0 ? m : 0, ",")
+      .concat(y !== null && y !== void 0 ? y : 0, ",")
+      .concat(k !== null && k !== void 0 ? k : 0, ")");
+  }
 
   const hex =
     "#" +
@@ -70,9 +126,35 @@
         .padStart(6, "0"));
   const textColor = getTextColor(hex);
 
+  document.colorCache = hex;
+  document.textColorCache = textColor;
+  document.documentElement.style.setProperty("--color", hex);
+  document.documentElement.style.setProperty("--text-color", textColor);
 
-  document.colorCache = hex
-  document.textColorCache = textColor
-  document.documentElement.style.setProperty('--color', hex)
-  document.documentElement.style.setProperty('--text-color', textColor)
+  const [r, g, b] = hexToRgb(hex);
+  const [h, s, l] = rgbToHsl(r, g, b);
+  const [c, m, y, k] = rgbToCmyk(r, g, b);
+  const inputs = new Map([
+    ["HEX", hex],
+    ["RGB", formatRgbString(r, g, b)],
+    ["HSL", formatHslString(h, s, l)],
+    ["CMYK", formatCmykString(c, m, y, k)],
+  ]);
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.tagName === "INPUT" && inputs.has(node.id)) {
+          node.value = inputs.get(node.id);
+          inputs.delete(node.id);
+
+          if (inputs.length === 0) {
+            observer.disconnect();
+          }
+        }
+      });
+    });
+  });
+
+  observer.observe(document, { childList: true, subtree: true });
 })();
