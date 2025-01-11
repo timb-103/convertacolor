@@ -101,6 +101,10 @@
             <NuxtLink
               :to="`/hex/${item[0]}`"
               class="bg-white bg-opacity-30 border p-2 flex gap-2 items-center"
+              :style="{
+                'border-color': 'currentColor',
+                color: 'currentColor',
+              }"
             >
               <span
                 :style="{background: `#${item[0]}`}"
