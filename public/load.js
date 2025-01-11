@@ -3,6 +3,7 @@
     var bin = (r << 16) | (g << 8) | b;
     return "#".concat(bin.toString(16).padStart(6, "0").toUpperCase());
   }
+
   function hexToRgb(hex) {
     hex = hex.replace("#", "");
     if (hex.length === 3) {
@@ -16,6 +17,7 @@
     var num = parseInt(hex, 16);
     return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
   }
+
   function luminance(r, g, b) {
     var toLinear = function (c) {
       var v = c / 255;
@@ -26,6 +28,7 @@
     var B = toLinear(b);
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
+
   function contrastRatio(rgb1, rgb2) {
     var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
     var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
@@ -33,11 +36,13 @@
     var darkest = Math.min(lum1, lum2);
     return (brightest + 0.05) / (darkest + 0.05);
   }
+
   function adjustColor(rgb, percent) {
     return rgb.map(function (val) {
       return Math.min(255, Math.max(0, Math.round(val + val * percent)));
     });
   }
+
   function getTextColor(hex) {
     var background = hexToRgb(hex);
     var ratios = [];
@@ -61,6 +66,7 @@
     });
     return bestColor !== undefined ? bestColor.color : ratios[0].color;
   }
+
   function rgbToHsl(r, g, b) {
     r /= 255;
     g /= 255;
@@ -88,6 +94,7 @@
     }
     return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
   }
+
   function rgbToCmyk(r, g, b) {
     r /= 255;
     g /= 255;
@@ -100,6 +107,7 @@
     var kRounded = Math.round(k * 100);
     return [c, m, y, kRounded];
   }
+
   function formatRgbString(r, g, b, isNormalized) {
     if (isNormalized === true) {
       var normalized = normalizeRgb([r, g, b]);
@@ -107,9 +115,11 @@
     }
     return "rgb(".concat(r, ",").concat(g, ",").concat(b, ")");
   }
+
   function formatHslString(h, s, l) {
     return "hsl(".concat(h, ",").concat(s, "%,").concat(l, "%)");
   }
+
   function formatCmykString(c, m, y, k) {
     return "cmyk("
       .concat(c !== null && c !== void 0 ? c : 0, ",")
@@ -118,12 +128,45 @@
       .concat(k !== null && k !== void 0 ? k : 0, ")");
   }
 
+  function hslToHex(h, s, l) {
+    s /= 100;
+    l /= 100;
+
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l - c / 2;
+
+    let r = 0, g = 0, b = 0;
+
+    if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+    else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+    else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+    else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+    else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+    else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+  }
+
+  function getRandomColor() {
+    const hue = Math.floor(Math.random() * 360); // Full hue spectrum
+    const saturation = Math.floor(Math.random() * (70 - 40 + 1)) + 40; // 40%-70%
+    const lightness = Math.floor(Math.random() * (75 - 50 + 1)) + 50; // 50%-75%
+    return hslToHex(hue, saturation, lightness);
+  }
+
+  // Extract hex value from the URL path (e.g., "/hex/000000")
+  const pathSegments = window.location.pathname.split("/");
+  const hexIndex = pathSegments.indexOf("hex");
   const hex =
-    "#" +
-    (new URLSearchParams(window.location.search).get("hex") ??
-      Math.floor(Math.random() * 16777215)
-        .toString(16)
-        .padStart(6, "0"));
+    (hexIndex !== -1 && pathSegments[hexIndex + 1]?.match(/^[0-9A-Fa-f]{6}$/))
+      ? `#${pathSegments[hexIndex + 1]}`
+      : getRandomColor(); // Use random color if no valid hex is provided
+
   const textColor = getTextColor(hex);
 
   document.colorCache = hex;
@@ -148,7 +191,7 @@
           node.value = inputs.get(node.id);
           inputs.delete(node.id);
 
-          if (inputs.length === 0) {
+          if (inputs.size === 0) {
             observer.disconnect();
           }
         }
