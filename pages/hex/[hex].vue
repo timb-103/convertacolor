@@ -8,7 +8,7 @@
 
       <!-- description -->
       <p class="text-center mx-auto max-w-[350px] mt-2">
-        Convert <span class="uppercase">{{ hexParam }}</span> ({{ name }}) to HEX, RGB, HSL and CMYK color values.
+        Convert hex code <span class="uppercase">{{ hexParam }}</span> ({{ name }}) to HEX, RGB, HSL and CMYK color values.
       </p>
 
       <form class="max-w-sm mx-auto mt-4 space-y-4">
@@ -165,7 +165,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: `Convert ${hexParam} (${name}) to HEX, RGB, HSL and CMYK color values.`
+      content: `Convert hex code ${hexParam} (${name}) to HEX, RGB, HSL and CMYK color values.`
     }
   ]
 });
