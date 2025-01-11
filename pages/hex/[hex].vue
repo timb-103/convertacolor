@@ -100,7 +100,7 @@
           >
             <NuxtLink
               :to="`/hex/${item[0]}`"
-              class="border border-black p-2 flex gap-2 items-center"
+              class="bg-white bg-opacity-30 border p-2 flex gap-2 items-center"
             >
               <span
                 :style="{background: `#${item[0]}`}"
