@@ -1,6 +1,6 @@
 type RGB = [number, number, number];
 type HSL = [number, number, number];
-type ColorNameEntry = [string, string, number?, number?, number?, number?, number?, number?];
+export type ColorNameEntry = [string, string, number?, number?, number?, number?, number?, number?];
 
 const ntc = {
   names: [

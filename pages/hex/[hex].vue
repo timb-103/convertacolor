@@ -145,6 +145,7 @@ const {
   cmyk,
   textColor,
   is8BitMode,
+  similarColors,
   handleColorChange
 } = useColorTools(hexParam);
 
@@ -154,14 +155,6 @@ const {
 } = useCopy();
 
 const name = ntc.name(hexParam)[1];
-const nameIndex = ntc.names.findIndex(v => v[1] === name);
-
-const similarColors = [
-  ntc.names[nameIndex - 2],
-  ntc.names[nameIndex - 1],
-  ntc.names[nameIndex + 1],
-  ntc.names[nameIndex + 2]
-].filter(v => v !== undefined);
 
 useHead({
   title: `${hexParam} - ${name}`,

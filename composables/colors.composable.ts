@@ -12,6 +12,7 @@ import {
   rgbToHsl,
   unnormalizeRgb
 } from '@/utils/color-methods.util';
+import ntc, { type ColorNameEntry } from '~/utils/ntc.util';
 
 interface ColorTools {
   hex: Ref<string>
@@ -21,6 +22,7 @@ interface ColorTools {
   cmyk: Ref<string>
   textColor: Ref<string>
   is8BitMode: Ref<boolean>
+  similarColors: Ref<ColorNameEntry[]>
   generateColor: (color: string) => void
   initialize: (color?: string) => void
   handleColorChange: (
@@ -40,11 +42,17 @@ export function useColorTools(initialHex?: string): ColorTools {
   const cmyk = ref<string>('');
   const is8BitMode = ref<boolean>(true);
   const textColor = ref<string>('');
+  const name = computed(() => ntc.name(hex.value)[1]);
+  const nameIndex = computed(() => ntc.names.findIndex(v => v[1] === name.value));
 
-  // const hexQuery = computed(() => /^[0-9A-F]{6}$/i.test(route.query.hex?.toString() ?? '')
-  //   ? `#${route.query.hex?.toString()}`
-  //   : undefined
-  // );
+  const similarColors = computed(() =>
+    [
+      ntc.names[nameIndex.value - 2],
+      ntc.names[nameIndex.value - 1],
+      ntc.names[nameIndex.value + 1],
+      ntc.names[nameIndex.value + 2]
+    ].filter(v => v !== undefined)
+  );
 
   function initialize(color?: string): void {
     generateColor(color ?? getRandomColor());
@@ -139,6 +147,7 @@ export function useColorTools(initialHex?: string): ColorTools {
     cmyk,
     textColor,
     is8BitMode,
+    similarColors,
     initialize,
     generateColor,
     handleColorChange

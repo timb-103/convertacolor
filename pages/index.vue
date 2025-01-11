@@ -123,7 +123,6 @@ import InputGroup from '@/components/InputGroup.vue';
 import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
 import CopiedDrawer from '@/components/CopiedDrawer.vue';
 import { useColorTools } from '~/composables/colors.composable';
-import ntc from '~/utils/ntc.util';
 
 const {
   hex,
@@ -133,6 +132,7 @@ const {
   cmyk,
   textColor,
   is8BitMode,
+  similarColors,
   handleColorChange
 } = useColorTools();
 
@@ -140,18 +140,6 @@ const {
   isCopied,
   copy
 } = useCopy();
-
-const name = computed(() => ntc.name(hex.value)[1]);
-const nameIndex = computed(() => ntc.names.findIndex(v => v[1] === name.value));
-
-const similarColors = computed(() =>
-  [
-    ntc.names[nameIndex.value - 2],
-    ntc.names[nameIndex.value - 1],
-    ntc.names[nameIndex.value + 1],
-    ntc.names[nameIndex.value + 2]
-  ].filter(v => v !== undefined)
-);
 
 useHead({
   title: 'Convert a Color – HEX, RGB, HSL, CMYK',
