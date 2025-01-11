@@ -83,6 +83,31 @@
         </p>
       </div>
 
+      <!-- similar colors -->
+      <div class="max-w-sm mx-auto my-8">
+        <h2 class="text-lg font-semibold">
+          Similar Colors
+        </h2>
+        <ul class="grid gap-2 mt-2">
+          <li
+            v-for="(item, index) in similarColors"
+            :key="index"
+          >
+            <NuxtLink
+              :to="`/hex/${item[0]}`"
+              class="bg-white border border-black p-2 flex gap-2 items-center text-black"
+            >
+              <span
+                :style="{background: `#${item[0]}`}"
+                class="inline-block w-10 h-10 border border-black flex-shrink-0"
+              />
+              <span class="font-semibold">#{{ item[0] }}</span>
+              <span class="text-sm">{{ item[1] }}</span>
+            </NuxtLink>
+          </li>
+        </ul>
+      </div>
+
       <!-- copied drawer -->
       <CopiedDrawer
         :text-color="textColor"
@@ -98,6 +123,7 @@ import InputGroup from '@/components/InputGroup.vue';
 import RgbToggleButtons from '@/components/RgbToggleButtons.vue';
 import CopiedDrawer from '@/components/CopiedDrawer.vue';
 import { useColorTools } from '~/composables/colors.composable';
+import ntc from '~/utils/ntc.util';
 
 const {
   hex,
@@ -114,6 +140,18 @@ const {
   isCopied,
   copy
 } = useCopy();
+
+const name = computed(() => ntc.name(hex.value)[1]);
+const nameIndex = computed(() => ntc.names.findIndex(v => v[1] === name.value));
+
+const similarColors = computed(() =>
+  [
+    ntc.names[nameIndex.value - 2],
+    ntc.names[nameIndex.value - 1],
+    ntc.names[nameIndex.value + 1],
+    ntc.names[nameIndex.value + 2]
+  ].filter(v => v !== undefined)
+);
 
 useHead({
   title: 'Convert a Color – HEX, RGB, HSL, CMYK',

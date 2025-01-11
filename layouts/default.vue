@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-24">
     <NuxtLoadingIndicator color="#fff" />
 
     <!-- nav -->

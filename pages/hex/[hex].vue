@@ -3,12 +3,12 @@
     <div class="max-w-lg mx-auto">
       <!-- title -->
       <h1 class="text-center text-2xl font-[Fredoka] uppercase">
-        {{ hexParam }} - {{ ntc.name(hexParam)[1] }}
+        {{ hexParam }} - {{ name }}
       </h1>
 
       <!-- description -->
       <p class="text-center mx-auto max-w-[350px] mt-2">
-        Convert <span class="uppercase">{{ hexParam }}</span> ({{ ntc.name(hexParam)[1] }}) to HEX, RGB, HSL and CMYK color values.
+        Convert <span class="uppercase">{{ hexParam }}</span> ({{ name }}) to HEX, RGB, HSL and CMYK color values.
       </p>
 
       <form class="max-w-sm mx-auto mt-4 space-y-4">
@@ -82,10 +82,35 @@
       </form>
 
       <!-- spacebar description -->
-      <div class="text-center my-8">
+      <div class="text-center mt-8">
         <p class="font-[Fredoka] text-center text-sm">
           Hit spacebar to convert a random color
         </p>
+      </div>
+
+      <!-- similar colors -->
+      <div class="max-w-sm mx-auto my-8">
+        <h2 class="text-lg font-semibold">
+          Similar Colors
+        </h2>
+        <ul class="grid gap-2 mt-2">
+          <li
+            v-for="(item, index) in similarColors"
+            :key="index"
+          >
+            <NuxtLink
+              :to="`/hex/${item[0]}`"
+              class="bg-white border border-black p-2 flex gap-2 items-center text-black"
+            >
+              <span
+                :style="{background: `#${item[0]}`}"
+                class="inline-block w-10 h-10 border border-black flex-shrink-0"
+              />
+              <span class="font-semibold">#{{ item[0] }}</span>
+              <span class="text-sm">{{ item[1] }}</span>
+            </NuxtLink>
+          </li>
+        </ul>
       </div>
 
       <!-- copied drawer -->
@@ -128,12 +153,22 @@ const {
   copy
 } = useCopy();
 
+const name = ntc.name(hexParam)[1];
+const nameIndex = ntc.names.findIndex(v => v[1] === name);
+
+const similarColors = [
+  ntc.names[nameIndex - 2],
+  ntc.names[nameIndex - 1],
+  ntc.names[nameIndex + 1],
+  ntc.names[nameIndex + 2]
+].filter(v => v !== undefined);
+
 useHead({
-  title: `${hexParam} - ${ntc.name(hexParam)[1]}`,
+  title: `${hexParam} - ${name}`,
   meta: [
     {
       name: 'description',
-      content: `Convert ${hexParam} (${ntc.name(hexParam)[1]}) to HEX, RGB, HSL and CMYK color values.`
+      content: `Convert ${hexParam} (${name}) to HEX, RGB, HSL and CMYK color values.`
     }
   ]
 });
