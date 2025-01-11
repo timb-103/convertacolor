@@ -21,7 +21,6 @@ interface ColorTools {
   cmyk: Ref<string>
   textColor: Ref<string>
   is8BitMode: Ref<boolean>
-  hexQuery: Ref<string | undefined>
   generateColor: (color: string) => void
   initialize: (color?: string) => void
   handleColorChange: (
@@ -30,9 +29,9 @@ interface ColorTools {
   ) => void
 }
 
-export function useColorTools(): ColorTools {
+export function useColorTools(initialHex?: string): ColorTools {
   const { space } = useMagicKeys();
-  const route = useRoute();
+  // const route = useRoute();
 
   const hex = ref<string>('');
   const rgb = ref<string>('');
@@ -42,10 +41,10 @@ export function useColorTools(): ColorTools {
   const is8BitMode = ref<boolean>(true);
   const textColor = ref<string>('');
 
-  const hexQuery = computed(() => /^[0-9A-F]{6}$/i.test(route.query.hex?.toString() ?? '')
-    ? `#${route.query.hex?.toString()}`
-    : undefined
-  );
+  // const hexQuery = computed(() => /^[0-9A-F]{6}$/i.test(route.query.hex?.toString() ?? '')
+  //   ? `#${route.query.hex?.toString()}`
+  //   : undefined
+  // );
 
   function initialize(color?: string): void {
     generateColor(color ?? getRandomColor());
@@ -118,23 +117,17 @@ export function useColorTools(): ColorTools {
     if (v) {
       initialize();
 
-      await navigateTo({
-        query: { hex: hex.value.replace('#', '') }
-      });
+      await navigateTo(`/hex/${hex.value.replace('#', '')}`);
 
       window.plausible('random-color:generated');
     }
-  });
-
-  watch(hexQuery, () => {
-    initialize(hexQuery.value);
   });
 
   onMounted(() => {
     const currentColor = (document as any).colorCache as string;
     (document as any).colorCache = undefined;
     initialize(
-      hexQuery.value ?? currentColor
+      initialHex ?? currentColor
     );
   });
 
@@ -146,7 +139,6 @@ export function useColorTools(): ColorTools {
     cmyk,
     textColor,
     is8BitMode,
-    hexQuery,
     initialize,
     generateColor,
     handleColorChange

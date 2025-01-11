@@ -23,6 +23,7 @@
         :class="{
           uppercase: label === 'HEX',
         }"
+        :disabled="disabled"
         class="bg-transparent border-b w-full py-2 font-semibold text-lg"
         @input="$emit('onInput')"
       >
@@ -45,9 +46,12 @@ import CopyButton from './CopyButton.vue';
 export interface Props {
   label: string
   placeholder: string
+  disabled?: boolean
 }
 
-defineProps<Props>();
+withDefaults(defineProps<Props>(), {
+  disabled: false
+});
 defineEmits<{ (e: 'copy'): void, (e: 'onInput'): void }>();
 
 const model = defineModel<string>();
