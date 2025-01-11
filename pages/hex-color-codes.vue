@@ -21,7 +21,7 @@
         >
           <NuxtLink
             :to="`/hex/${item[0]}`"
-            class="bg-white border border-black p-2 flex gap-2 items-center"
+            class="bg-white border border-black p-2 flex gap-2 items-center text-black"
           >
             <span
               :style="{background: `#${item[0]}`}"
